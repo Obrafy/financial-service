@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 
 import { ConfigInterface, loader, validationSchema } from './config';
-import { UsersModule } from './users/users.module';
+import { EmployeeModule } from './employee/employee.module';
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import { UsersModule } from './users/users.module';
       }),
     }),
 
-    UsersModule,
+    EmployeeModule,
   ],
   controllers: [AppController],
   providers: [],
