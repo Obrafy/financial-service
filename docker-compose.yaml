@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    entrypoint: .docker/entrypoint.sh
+    container_name: TROCAR_O_NOME_AQUI
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - db-mongo
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
