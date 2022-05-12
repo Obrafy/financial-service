@@ -9,5 +9,3 @@ services:
       - 3000:3000
     volumes:
       - .:/app
-    extra_hosts:
-      - "host.docker.internal:172.17.0.1"

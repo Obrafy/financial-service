@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 
 import { ConfigInterface, loader, validationSchema } from './config';
-import { EmployeeModule } from './employee/employee.module';
+import { TaskPriceModule } from './task-price/task-price.module';
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import { EmployeeModule } from './employee/employee.module';
       }),
     }),
 
-    EmployeeModule,
+    TaskPriceModule,
   ],
   controllers: [AppController],
   providers: [],
