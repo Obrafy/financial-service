@@ -1,22 +1,22 @@
-import { Prop, Schema } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import { TaskPrice } from 'src/task-price/entities/task-price.entity';
 
 export type EmployeeDocument = Employee & Document;
 
 @Schema()
-export class TaskPricing {
-  @Prop()
-  taskId: number;
-
-  @Prop()
-  price: number;
-}
-
-@Schema()
 export class Employee {
-  @Prop()
-  employeeId: number;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: '', required: true })
+  employeeId: string;
 
-  @Prop()
-  price: TaskPricing[];
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'TaskPrice' }] })
+  projectHistory: TaskPrice[];
+
+  @Prop({ type: Date })
+  createdAt: Date;
+
+  @Prop({ type: Date })
+  updatedAt: Date;
 }
+
+export const EmployeeSchema = SchemaFactory.createForClass(Employee);
