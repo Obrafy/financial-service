@@ -19,16 +19,16 @@ export class TaskPriceController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.taskPriceService.findOne(+id);
+    return this.taskPriceService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskPriceDto: UpdateTaskPriceDto) {
-    return this.taskPriceService.update(+id, updateTaskPriceDto);
+    return this.taskPriceService.update(id, updateTaskPriceDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.taskPriceService.remove(+id);
+    return this.taskPriceService.remove(id);
   }
 }

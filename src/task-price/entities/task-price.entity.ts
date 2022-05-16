@@ -12,9 +12,9 @@ export class TaskPrice {
   price: number;
 
   @Prop({ type: Date, default: Date.now })
-  created_at: Date;
+  createdAt: Date;
 
-  updated_at: Date;
+  updatedAt: Date;
 }
 
 export const TaskPriceSchema = SchemaFactory.createForClass(TaskPrice);

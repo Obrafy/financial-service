@@ -10,9 +10,7 @@ export class TaskPriceService {
   constructor(@InjectModel(TaskPrice.name) private taskPriceModel: Model<TaskPriceDocument>) {}
 
   async create(createTaskBody: CreateTaskPriceDto): Promise<TaskPrice> {
-    const createdTaskModel = new this.taskPriceModel(createTaskBody);
-
-    await createdTaskModel.save();
+    const createdTaskModel = await this.taskPriceModel.create(createTaskBody);
 
     return createdTaskModel;
   }
@@ -21,20 +19,22 @@ export class TaskPriceService {
     return this.taskPriceModel.find();
   }
 
-  async findOne(id: number): Promise<TaskPrice> {
-    return this.taskPriceModel.findOne({ id: id });
+  async findOne(id: string): Promise<TaskPrice> {
+    return this.taskPriceModel.findOne({ id: id }).exec();
   }
 
-  async update(id: number, taskPriceToUpdate: UpdateTaskPriceDto) {
+  async update(id: string, taskPriceToUpdate: UpdateTaskPriceDto) {
     const taskPriceWithUpdateTime = {
       ...taskPriceToUpdate,
-      updated_at: Date.now(),
+      updatedAt: Date.now(),
     };
 
-    return await this.taskPriceModel.updateOne({ id: id }, taskPriceWithUpdateTime);
+    const updated = await this.taskPriceModel.findOneAndUpdate({ id: id }, taskPriceWithUpdateTime).exec();
+
+    return updated;
   }
 
-  async remove(id: number): Promise<TaskPrice> {
+  async remove(id: string): Promise<TaskPrice> {
     return this.taskPriceModel.remove({ id: id });
   }
 }
