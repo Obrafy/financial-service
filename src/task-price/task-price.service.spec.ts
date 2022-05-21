@@ -49,75 +49,99 @@ describe('TaskPriceService', () => {
     jest.clearAllMocks();
   });
 
-  it('should test create method', async () => {
-    const expectedOutput = {
-      taskId: 'Test',
-      price: 3500,
-    };
+  describe('create', () => {
+    it('should create a TaskPrice', async () => {
+      const expectedOutput = {
+        taskId: 'Test',
+        price: 3500,
+      };
 
-    const spyCreateModel = jest.spyOn(mockedTaskPriceModel, 'create').mockImplementationOnce(() => {
-      return Promise.resolve(expectedOutput);
+      const spyCreateModel = jest.spyOn(mockedTaskPriceModel, 'create').mockImplementationOnce(() => {
+        return Promise.resolve(expectedOutput);
+      });
+
+      const output = await mockedTaskPriceService.create(expectedOutput);
+
+      expect(spyCreateModel).toBeCalled();
+      expect(spyCreateModel).toBeCalledWith(expectedOutput);
+      expect(output).toEqual(expectedOutput);
     });
 
-    const output = await mockedTaskPriceService.create(expectedOutput);
-
-    expect(spyCreateModel).toBeCalled();
-    expect(spyCreateModel).toBeCalledWith(expectedOutput);
-    expect(output).toEqual(expectedOutput);
+    it.todo('test bad payload');
+    it.todo('test returning duplicate values error');
+    it.todo('test returning error when dont find taskId');
   });
 
-  it('should get all tasks', async () => {
-    const expectedOutput = [mockTaskPrice(), mockTaskPrice()];
+  describe('findAll', () => {
+    it('should get all tasks', async () => {
+      const expectedOutput = [mockTaskPrice(), mockTaskPrice()];
 
-    const spyFindModel = jest.spyOn(mockedTaskPriceModel, 'find').mockResolvedValueOnce(expectedOutput);
+      const spyFindModel = jest.spyOn(mockedTaskPriceModel, 'find').mockResolvedValueOnce(expectedOutput);
 
-    const output = await mockedTaskPriceService.findAll();
+      const output = await mockedTaskPriceService.findAll();
 
-    expect(spyFindModel).toBeCalled();
-    expect(output).toEqual(expectedOutput);
+      expect(spyFindModel).toBeCalled();
+      expect(output).toEqual(expectedOutput);
+    });
+
+    it.todo('should return an empty array when dont have data');
   });
 
-  it('should find one task in DB', async () => {
-    const expectedOutput = mockTaskPrice();
-    const usedToFindID = String(Math.random());
+  describe('findOne', () => {
+    it('should find one task in DB', async () => {
+      const expectedOutput = mockTaskPrice();
+      const usedToFindID = String(Math.random());
 
-    const spyFindOneModel = jest.spyOn(mockedTaskPriceModel, 'findOne').mockReturnValueOnce(
-      createMock<Query<TaskPriceDocument, TaskPriceDocument>>({
-        exec: jest.fn().mockResolvedValueOnce({
-          ...expectedOutput,
+      const spyFindOneModel = jest.spyOn(mockedTaskPriceModel, 'findOne').mockReturnValueOnce(
+        createMock<Query<TaskPriceDocument, TaskPriceDocument>>({
+          exec: jest.fn().mockResolvedValueOnce({
+            ...expectedOutput,
+          }),
         }),
-      }),
-    );
+      );
 
-    const output = await mockedTaskPriceService.findOne(usedToFindID);
+      const output = await mockedTaskPriceService.findOne(usedToFindID);
 
-    expect(spyFindOneModel).toBeCalledWith({ id: usedToFindID });
-    expect(output).toEqual(expectedOutput);
+      expect(spyFindOneModel).toBeCalledWith({ id: usedToFindID });
+      expect(output).toEqual(expectedOutput);
+    });
+
+    it.todo('should return an empty object when dont have this specific id');
+    it.todo('should find a specific object among many objects');
   });
 
-  it('should update taskPrice model', async () => {
-    const expectedOutput = mockTaskPrice();
-    const usedToFindID = String(Math.random());
+  describe('update', () => {
+    it('should update a model', async () => {
+      const expectedOutput = mockTaskPrice();
+      const usedToFindID = String(Math.random());
 
-    jest.spyOn(mockedTaskPriceModel, 'findOneAndUpdate').mockReturnValueOnce(
-      createMock<Query<TaskPriceDocument, TaskPriceDocument>>({
-        exec: jest.fn().mockResolvedValueOnce({
-          ...expectedOutput,
+      jest.spyOn(mockedTaskPriceModel, 'findOneAndUpdate').mockReturnValueOnce(
+        createMock<Query<TaskPriceDocument, TaskPriceDocument>>({
+          exec: jest.fn().mockResolvedValueOnce({
+            ...expectedOutput,
+          }),
         }),
-      }),
-    );
+      );
 
-    const output = await mockedTaskPriceService.update(usedToFindID, expectedOutput);
+      const output = await mockedTaskPriceService.update(usedToFindID, expectedOutput);
 
-    expect(output).toEqual(expectedOutput);
+      expect(output).toEqual(expectedOutput);
+    });
+
+    it.todo('should return an error when have a wrong request body');
+    it.todo('it shouldnt update a model if ID is not found');
   });
 
-  it('should remove from db', async () => {
-    const usedToFindID = String(Math.random());
+  describe('remove', () => {
+    it('should remove one model from DB', async () => {
+      const usedToFindID = String(Math.random());
 
-    const spyRemoveModel = jest.spyOn(mockedTaskPriceModel, 'remove').mockResolvedValueOnce(true);
-    await mockedTaskPriceService.remove(usedToFindID);
+      const spyRemoveModel = jest.spyOn(mockedTaskPriceModel, 'remove').mockResolvedValueOnce(true);
+      await mockedTaskPriceService.remove(usedToFindID);
 
-    expect(spyRemoveModel).toBeCalledWith({ id: usedToFindID });
+      expect(spyRemoveModel).toBeCalledWith({ id: usedToFindID });
+    });
+
+    it.todo('should not delete if ID is not found');
   });
 });
