@@ -1,5 +1,5 @@
 export class CreateTaskPriceDto {
-  name: string;
+  taskId: string;
 
   price: number;
 }

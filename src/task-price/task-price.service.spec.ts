@@ -4,9 +4,10 @@ import { TaskPriceService } from './task-price.service';
 import { TaskPrice, TaskPriceDocument } from './entities/task-price.entity';
 import { createMock } from '@golevelup/ts-jest';
 import { getModelToken } from '@nestjs/mongoose';
+import { randomUUID } from 'crypto';
 
-const mockTaskPrice = (name = 'Testing', price = 3500): Partial<TaskPrice> => ({
-  name,
+const mockTaskPrice = (taskId = randomUUID(), price = 3500): Partial<TaskPrice> => ({
+  taskId,
   price,
 });
 
@@ -50,7 +51,7 @@ describe('TaskPriceService', () => {
 
   it('should test create method', async () => {
     const expectedOutput = {
-      name: 'Test',
+      taskId: 'Test',
       price: 3500,
     };
 
@@ -78,7 +79,7 @@ describe('TaskPriceService', () => {
 
   it('should find one task in DB', async () => {
     const expectedOutput = mockTaskPrice();
-    const usedToFindID = Math.random();
+    const usedToFindID = String(Math.random());
 
     const spyFindOneModel = jest.spyOn(mockedTaskPriceModel, 'findOne').mockReturnValueOnce(
       createMock<Query<TaskPriceDocument, TaskPriceDocument>>({
@@ -96,7 +97,7 @@ describe('TaskPriceService', () => {
 
   it('should update taskPrice model', async () => {
     const expectedOutput = mockTaskPrice();
-    const usedToFindID = Math.random();
+    const usedToFindID = String(Math.random());
 
     jest.spyOn(mockedTaskPriceModel, 'findOneAndUpdate').mockReturnValueOnce(
       createMock<Query<TaskPriceDocument, TaskPriceDocument>>({
@@ -112,7 +113,7 @@ describe('TaskPriceService', () => {
   });
 
   it('should remove from db', async () => {
-    const usedToFindID = Math.random();
+    const usedToFindID = String(Math.random());
 
     const spyRemoveModel = jest.spyOn(mockedTaskPriceModel, 'remove').mockResolvedValueOnce(true);
     await mockedTaskPriceService.remove(usedToFindID);
