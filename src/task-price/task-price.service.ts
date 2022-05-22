@@ -20,7 +20,7 @@ export class TaskPriceService {
   }
 
   async findOne(id: string): Promise<TaskPrice> {
-    return this.taskPriceModel.findOne({ id: id }).exec();
+    return this.taskPriceModel.findOne({ _id: id }).exec();
   }
 
   async update(id: string, taskPriceToUpdate: UpdateTaskPriceDto) {
@@ -29,12 +29,18 @@ export class TaskPriceService {
       updatedAt: Date.now(),
     };
 
-    const updated = await this.taskPriceModel.findOneAndUpdate({ id: id }, taskPriceWithUpdateTime).exec();
+    const updated = await this.taskPriceModel.findOneAndUpdate({ _id: id }, taskPriceWithUpdateTime).exec();
 
     return updated;
   }
 
-  async remove(id: string): Promise<TaskPrice> {
-    return this.taskPriceModel.remove({ id: id });
+  async remove(id: string): Promise<boolean> {
+    const { deletedCount } = await this.taskPriceModel.deleteOne({ _id: id });
+
+    if (deletedCount === 0) {
+      return false;
+    }
+
+    return true;
   }
 }

@@ -14,7 +14,7 @@ describe('TaskPriceController', () => {
         {
           provide: TaskPriceService,
           useValue: {
-            findAll: jest.fn().mockResolvedValue({}),
+            findAll: jest.fn(),
             findOne: jest.fn(),
             update: jest.fn(),
             remove: jest.fn(),
@@ -25,6 +25,10 @@ describe('TaskPriceController', () => {
 
     controller = module.get<TaskPriceController>(TaskPriceController);
     mockedService = module.get<TaskPriceService>(TaskPriceService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {

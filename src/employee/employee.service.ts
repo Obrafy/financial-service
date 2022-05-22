@@ -36,7 +36,7 @@ export class EmployeeService {
   }
 
   async remove(id: string): Promise<boolean> {
-    const { deletedCount } = await this.employeeModel.deleteOne({ _id: id }).exec();
+    const { deletedCount } = await this.employeeModel.deleteOne({ _id: id });
 
     if (deletedCount == 0) {
       return false;

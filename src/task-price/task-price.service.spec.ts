@@ -6,7 +6,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { getModelToken } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
 
-const mockTaskPrice = (taskId = randomUUID(), price = 3500): Partial<TaskPrice> => ({
+export const mockTaskPrice = (taskId = randomUUID(), price = 3500): Partial<TaskPrice> => ({
   taskId,
   price,
 });
@@ -29,7 +29,7 @@ describe('TaskPriceService', () => {
             findOneAndUpdate: jest.fn(),
             update: jest.fn(),
             create: jest.fn(),
-            remove: jest.fn(),
+            deleteOne: jest.fn(),
             exec: jest.fn(),
           },
         },
@@ -102,7 +102,7 @@ describe('TaskPriceService', () => {
 
       const output = await mockedTaskPriceService.findOne(usedToFindID);
 
-      expect(spyFindOneModel).toBeCalledWith({ id: usedToFindID });
+      expect(spyFindOneModel).toBeCalledWith({ _id: usedToFindID });
       expect(output).toEqual(expectedOutput);
     });
 
@@ -136,10 +136,13 @@ describe('TaskPriceService', () => {
     it('should remove one model from DB', async () => {
       const usedToFindID = String(Math.random());
 
-      const spyRemoveModel = jest.spyOn(mockedTaskPriceModel, 'remove').mockResolvedValueOnce(true);
+      const spyRemoveModel = jest
+        .spyOn(mockedTaskPriceModel, 'deleteOne')
+        .mockResolvedValueOnce({ acknowledged: true, deletedCount: 2 });
+
       await mockedTaskPriceService.remove(usedToFindID);
 
-      expect(spyRemoveModel).toBeCalledWith({ id: usedToFindID });
+      expect(spyRemoveModel).toBeCalledWith({ _id: usedToFindID });
     });
 
     it.todo('should not delete if ID is not found');
