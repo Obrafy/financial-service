@@ -15,6 +15,7 @@ export class TaskPrice {
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
+  @Prop({ type: Date })
   updatedAt: Date;
 }
 

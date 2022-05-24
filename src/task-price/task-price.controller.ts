@@ -1,34 +1,45 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
 import { TaskPriceService } from './task-price.service';
-import { CreateTaskPriceDto } from './dto/create-task-price.dto';
-import { UpdateTaskPriceDto } from './dto/update-task-price.dto';
+import { GrpcMethod } from '@nestjs/microservices';
+import {
+  CreateRequest,
+  DeleteResponse,
+  FindByIdRequest,
+  FindResponse,
+  TASK_PRICE_SERVICE_NAME,
+  UpdateRequest,
+  WithObjectResponse,
+} from './dto/proto/financial-service/task-price.pb';
 
-@Controller('task-price')
+@Controller()
 export class TaskPriceController {
-  constructor(private readonly taskPriceService: TaskPriceService) {}
+  @Inject(TaskPriceService)
+  private readonly taskPriceService: TaskPriceService;
 
-  @Post()
-  create(@Body() createTaskPriceDto: CreateTaskPriceDto) {
-    return this.taskPriceService.create(createTaskPriceDto);
+  @GrpcMethod(TASK_PRICE_SERVICE_NAME, 'create')
+  async create(createRequestBody: CreateRequest): Promise<WithObjectResponse> {
+    const response = await this.taskPriceService.create(createRequestBody);
+
+    return response;
   }
 
-  @Get()
-  findAll() {
+  @GrpcMethod(TASK_PRICE_SERVICE_NAME, 'find')
+  async findAll(): Promise<FindResponse> {
     return this.taskPriceService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @GrpcMethod(TASK_PRICE_SERVICE_NAME, 'findOne')
+  async findOne({ id }: FindByIdRequest): Promise<WithObjectResponse> {
     return this.taskPriceService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskPriceDto: UpdateTaskPriceDto) {
-    return this.taskPriceService.update(id, updateTaskPriceDto);
+  @GrpcMethod(TASK_PRICE_SERVICE_NAME, 'update')
+  async update(payload: UpdateRequest): Promise<WithObjectResponse> {
+    return this.taskPriceService.update(payload);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @GrpcMethod(TASK_PRICE_SERVICE_NAME, 'delete')
+  async remove({ id }: FindByIdRequest): Promise<DeleteResponse> {
     return this.taskPriceService.remove(id);
   }
 }

@@ -1,46 +1,66 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateTaskPriceDto } from './dto/create-task-price.dto';
-import { UpdateTaskPriceDto } from './dto/update-task-price.dto';
 import { TaskPrice, TaskPriceDocument } from './entities/task-price.entity';
+import {
+  CreateRequest,
+  DeleteResponse,
+  FindResponse,
+  UpdateRequest,
+  WithObjectResponse,
+} from './dto/proto/financial-service/task-price.pb';
+import { makeResponse } from '../common/utils';
 
 @Injectable()
 export class TaskPriceService {
   constructor(@InjectModel(TaskPrice.name) private taskPriceModel: Model<TaskPriceDocument>) {}
 
-  async create(createTaskBody: CreateTaskPriceDto): Promise<TaskPrice> {
+  async create(createTaskBody: CreateRequest): Promise<WithObjectResponse> {
     const createdTaskModel = await this.taskPriceModel.create(createTaskBody);
 
-    return createdTaskModel;
+    return makeResponse(createdTaskModel);
   }
 
-  async findAll(): Promise<TaskPrice[]> {
-    return this.taskPriceModel.find();
+  async findAll(): Promise<FindResponse> {
+    const allTaskPrices = await this.taskPriceModel.find();
+
+    return makeResponse(allTaskPrices);
   }
 
-  async findOne(id: string): Promise<TaskPrice> {
-    return this.taskPriceModel.findOne({ _id: id }).exec();
+  async findOne(id: string): Promise<WithObjectResponse> {
+    const requestedModel = await this.taskPriceModel.findOne({ _id: id });
+
+    return makeResponse(requestedModel);
   }
 
-  async update(id: string, taskPriceToUpdate: UpdateTaskPriceDto) {
+  async update({ id, price, taskId }: UpdateRequest) {
     const taskPriceWithUpdateTime = {
-      ...taskPriceToUpdate,
+      price,
+      taskId,
       updatedAt: Date.now(),
     };
 
-    const updated = await this.taskPriceModel.findOneAndUpdate({ _id: id }, taskPriceWithUpdateTime).exec();
+    await this.taskPriceModel.findOneAndUpdate({ _id: id }, taskPriceWithUpdateTime).exec();
+    const updated = await this.taskPriceModel.findOne({ _id: id });
 
-    return updated;
+    return makeResponse(updated);
   }
 
-  async remove(id: string): Promise<boolean> {
+  async remove(id: string): Promise<DeleteResponse> {
     const { deletedCount } = await this.taskPriceModel.deleteOne({ _id: id });
 
     if (deletedCount === 0) {
-      return false;
+      return {
+        status: HttpStatus.NOT_FOUND,
+        error: null,
+        isDeleted: false,
+      };
     }
 
-    return true;
+    return {
+      status: HttpStatus.OK,
+      error: null,
+      isDeleted: true,
+    };
   }
 }

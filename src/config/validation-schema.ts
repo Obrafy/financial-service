@@ -10,4 +10,7 @@ export default Joi.object<ConfigInterface>({
   DB_PASSWORD: Joi.string(),
   DB_URI: Joi.string().uri(),
   DB_USER: Joi.string(),
+
+  TASKPRICE_HOST: Joi.string().hostname().default('0.0.0.0'),
+  TASKPRICE_PORT: Joi.number().default(3000),
 });

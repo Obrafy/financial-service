@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TaskPrice } from './entities/task-price.entity';
 import { TaskPriceController } from './task-price.controller';
 import { TaskPriceService } from './task-price.service';
 
@@ -47,27 +46,7 @@ describe('TaskPriceController', () => {
   });
 
   describe('findAll', () => {
-    it('should respond all values', async () => {
-      const expectedOutput = [
-        {
-          taskId: 'task-doidonas112',
-          price: 2000.123,
-          createdAt: new Date('2022-05-21T18:05:00.127Z'),
-          updatedAt: new Date(),
-        },
-        {
-          taskId: 'task-doidonas112',
-          price: 2000.123,
-          createdAt: new Date('2022-05-21T19:06:15.972Z'),
-          updatedAt: new Date(),
-        },
-      ] as TaskPrice[];
-      jest.spyOn(mockedService, 'findAll').mockResolvedValue(expectedOutput);
-
-      const expectedResponse = await controller.findAll();
-
-      expect(expectedResponse).toEqual(expectedOutput);
-    });
+    it.todo('should respond all values');
 
     it.todo('should return an empty array if dont have any data');
   });
