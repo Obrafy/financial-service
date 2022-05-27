@@ -3,14 +3,9 @@ version: '3.8'
 services:
   app:
     build: .
-    entrypoint: .docker/entrypoint.sh
+    entrypoint: "npm run lint"
     container_name: financial-service
     ports:
       - 3000:3000
     volumes:
       - .:/app
-    networks:
-      - financial-service-net
-
-networks:
-  financial-service-net:
