@@ -571,12 +571,12 @@
     tslib "2.3.1"
     uuid "8.3.2"
 
-"@nestjs/config@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@nestjs/config/-/config-2.0.0.tgz"
+"@nestjs/config@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-2.0.1.tgz#1b977bb8c1a97637cfc916ab0c0910db047d372e"
   dependencies:
-    dotenv "16.0.0"
-    dotenv-expand "8.0.2"
+    dotenv "16.0.1"
+    dotenv-expand "8.0.3"
     lodash "4.17.21"
     uuid "8.3.2"
 
@@ -1854,13 +1854,13 @@ domexception@^2.0.1:
   dependencies:
     webidl-conversions "^5.0.0"
 
-dotenv-expand@8.0.2:
-  version "8.0.2"
-  resolved "https://registry.npmjs.org/dotenv-expand/-/dotenv-expand-8.0.2.tgz"
+dotenv-expand@8.0.3:
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-8.0.3.tgz#29016757455bcc748469c83a19b36aaf2b83dd6e"
 
-dotenv@16.0.0:
-  version "16.0.0"
-  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.0.0.tgz"
+dotenv@16.0.1:
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.1.tgz#8f8f9d94876c35dac989876a5d3a82a267fdce1d"
 
 ee-first@1.1.1:
   version "1.1.1"
