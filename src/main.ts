@@ -11,7 +11,7 @@ async function bootstrap() {
     options: {
       url: `${process.env.TASKPRICE_HOST}:${process.env.TASKPRICE_PORT}`,
       package: [FINANCIAL_PROJECT_PACKAGE_NAME],
-      protoPath: [join('..', 'proto', 'proto-files', 'financial-service', 'financial-service.proto')],
+      protoPath: [join(`${process.env.ENV}`, 'proto', 'proto-files', 'financial-service', 'financial-service.proto')],
     },
   });
 

@@ -14,4 +14,7 @@ export interface ConfigInterface {
 
   TASKPRICE_HOST: string;
   TASKPRICE_PORT: number;
+
+  PROJECT_SERVICE_HOST: string;
+  PROJECT_SERVICE_PORT: number;
 }
