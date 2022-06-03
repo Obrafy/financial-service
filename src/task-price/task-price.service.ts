@@ -9,7 +9,7 @@ import {
   WithObjectResponse,
 } from '../common/proto-dto/financial-service/financial-service.pb';
 import { makeResponseTaskPrice } from '../common/utils';
-import { ProjectServiceClient, PROJECT_SERVICE_NAME } from 'src/common/proto-dto/project-service/project.pb';
+import { ProjectServiceClient, PROJECT_SERVICE_NAME } from '../common/proto-dto/project-service/project.pb';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
