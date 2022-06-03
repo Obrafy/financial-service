@@ -7,7 +7,7 @@ import {
   pResponseArrayObject,
   pResponseWithObject,
   pUpdateRequest,
-} from 'src/task-price/dto/proto/financial-service/financial-service.pb';
+} from 'src/common/proto-dto/financial-service/financial-service.pb';
 import { makeResponseEmployee } from 'src/common/utils';
 
 @Injectable()

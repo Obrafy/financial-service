@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AppModule } from './app.module';
-import { FINANCIAL_PROJECT_PACKAGE_NAME } from './task-price/dto/proto/financial-service/financial-service.pb';
+import { FINANCIAL_PROJECT_PACKAGE_NAME } from './common/proto-dto/financial-service/financial-service.pb';
 
 async function bootstrap() {
   const app: INestMicroservice = await NestFactory.createMicroservice(AppModule, {
