@@ -6,7 +6,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { getModelToken } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
 import { status } from '@grpc/grpc-js';
-import { makeResponse } from '../common/utils';
+import { makeResponseTaskPrice } from '../common/utils';
 
 export const mockTaskPrice = (taskId = randomUUID(), price = 3500): Partial<TaskPrice> => ({
   taskId: taskId,
@@ -68,7 +68,7 @@ describe('TaskPriceService', () => {
 
       expect(spyCreateModel).toBeCalled();
       expect(spyCreateModel).toBeCalledWith(expectedOutput);
-      expect(output).toEqual(makeResponse({ ...expectedOutput, createdAt: createdDate }));
+      expect(output).toEqual(makeResponseTaskPrice({ ...expectedOutput, createdAt: createdDate }));
     });
 
     it.todo('test bad payload');
@@ -85,7 +85,7 @@ describe('TaskPriceService', () => {
       const output = await mockedTaskPriceService.findAll();
 
       expect(spyFindModel).toBeCalled();
-      expect(output).toEqual(makeResponse(expectedOutput));
+      expect(output).toEqual(makeResponseTaskPrice(expectedOutput));
     });
 
     it.todo('should return an empty array when dont have data');
@@ -108,7 +108,7 @@ describe('TaskPriceService', () => {
     //   const output = await mockedTaskPriceService.findOne(usedToFindID);
 
     //   expect(spyFindOneModel).toBeCalledWith({ _id: usedToFindID });
-    //   expect(output).toEqual(makeResponse(expectedOutput));
+    //   expect(output).toEqual(makeResponseTaskPrice(expectedOutput));
     // });
 
     it.todo('should return an empty object when dont have this specific id');

@@ -3,7 +3,6 @@ import { TaskPriceService } from './task-price.service';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
   CreateRequest,
-  DeleteResponse,
   FindByIdRequest,
   FindResponse,
   TASK_PRICE_SERVICE_NAME,
@@ -18,9 +17,7 @@ export class TaskPriceController {
 
   @GrpcMethod(TASK_PRICE_SERVICE_NAME, 'create')
   async create(createRequestBody: CreateRequest): Promise<WithObjectResponse> {
-    const response = await this.taskPriceService.create(createRequestBody);
-
-    return response;
+    return this.taskPriceService.create(createRequestBody);
   }
 
   @GrpcMethod(TASK_PRICE_SERVICE_NAME, 'find')
@@ -39,7 +36,7 @@ export class TaskPriceController {
   }
 
   @GrpcMethod(TASK_PRICE_SERVICE_NAME, 'delete')
-  async remove({ id }: FindByIdRequest): Promise<DeleteResponse> {
+  async remove({ id }: FindByIdRequest): Promise<WithObjectResponse> {
     return this.taskPriceService.remove(id);
   }
 }

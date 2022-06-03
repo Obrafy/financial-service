@@ -3,15 +3,15 @@ import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AppModule } from './app.module';
-import { TASK_PRICE_PACKAGE_NAME } from './task-price/dto/proto/financial-service/task-price.pb';
+import { FINANCIAL_PROJECT_PACKAGE_NAME } from './task-price/dto/proto/financial-service/financial-service.pb';
 
 async function bootstrap() {
   const app: INestMicroservice = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.GRPC,
     options: {
       url: `${process.env.TASKPRICE_HOST}:${process.env.TASKPRICE_PORT}`,
-      package: [TASK_PRICE_PACKAGE_NAME],
-      protoPath: [join('node_modules', 'proto', 'proto-files', 'financial-service', 'task-price.proto')],
+      package: [FINANCIAL_PROJECT_PACKAGE_NAME],
+      protoPath: [join('..', 'proto', 'proto-files', 'financial-service', 'financial-service.proto')],
     },
   });
 

@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { GrpcMethod } from '@nestjs/microservices';
+import {
+  EMPLOYEE_SERVICE_NAME,
+  pCreateRequest,
+  pFindByIdRequest,
+  pUpdateRequest,
+} from 'src/task-price/dto/proto/financial-service/financial-service.pb';
 
-@Controller('employee')
+@Controller()
 export class EmployeeController {
-  constructor(private readonly employeeService: EmployeeService) {}
+  @Inject(EmployeeService)
+  private readonly employeeService: EmployeeService;
 
-  @Post()
-  create(@Body() createEmployeeDto: CreateEmployeeDto) {
-    return this.employeeService.create(createEmployeeDto);
+  @GrpcMethod(EMPLOYEE_SERVICE_NAME, 'Create')
+  async create(createRequestBody: pCreateRequest) {
+    return this.employeeService.create(createRequestBody);
   }
 
-  @Get()
-  findAll() {
+  @GrpcMethod(EMPLOYEE_SERVICE_NAME, 'Find')
+  async findAll() {
     return this.employeeService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @GrpcMethod(EMPLOYEE_SERVICE_NAME, 'FindOne')
+  async findOne({ id }: pFindByIdRequest) {
     return this.employeeService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEmployeeDto: UpdateEmployeeDto) {
-    return this.employeeService.update(id, updateEmployeeDto);
+  @GrpcMethod(EMPLOYEE_SERVICE_NAME, 'Update')
+  async update(payload: pUpdateRequest) {
+    return this.employeeService.update(payload);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @GrpcMethod(EMPLOYEE_SERVICE_NAME, 'Delete')
+  async remove({ id }: pFindByIdRequest) {
     return this.employeeService.remove(id);
   }
 }

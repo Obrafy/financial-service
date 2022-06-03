@@ -19,8 +19,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "proto:install": "npm i git@github.com:Obrafy/proto.git",
-    "proto:run-local": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=../proto/proto-files --ts_proto_out=src/task-price/dto/proto ../proto/proto-files/financial-service/task-price.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
-    "proto:run": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/proto/proto-files --ts_proto_out=src/task-price/dto/proto node_modules/proto/proto-files/financial-service/task-price.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
+    "proto:run-local": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=../proto/proto-files --ts_proto_out=src/task-price/dto/proto ../proto/proto-files/financial-service/financial-service.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
+    "proto:run": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/proto/proto-files --ts_proto_out=src/task-price/dto/proto node_modules/proto/proto-files/financial-service/financial-service.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
     "proto:all": "npm run proto:install && npm run proto:run"
   },
   "dependencies": {
