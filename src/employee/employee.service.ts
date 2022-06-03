@@ -7,8 +7,8 @@ import {
   pResponseArrayObject,
   pResponseWithObject,
   pUpdateRequest,
-} from 'src/common/proto-dto/financial-service/financial-service.pb';
-import { makeResponseEmployee } from 'src/common/utils';
+} from '../common/proto-dto/financial-service/financial-service.pb';
+import { makeResponseEmployee } from '../common/utils';
 
 @Injectable()
 export class EmployeeService {

@@ -6,7 +6,7 @@ import {
   pCreateRequest,
   pFindByIdRequest,
   pUpdateRequest,
-} from 'src/common/proto-dto/financial-service/financial-service.pb';
+} from '../common/proto-dto/financial-service/financial-service.pb';
 
 @Controller()
 export class EmployeeController {

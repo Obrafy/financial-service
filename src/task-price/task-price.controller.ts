@@ -8,7 +8,7 @@ import {
   TASK_PRICE_SERVICE_NAME,
   UpdateRequest,
   WithObjectResponse,
-} from 'src/common/proto-dto/financial-service/financial-service.pb';
+} from '../common/proto-dto/financial-service/financial-service.pb';
 
 @Controller()
 export class TaskPriceController {

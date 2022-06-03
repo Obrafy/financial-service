@@ -7,7 +7,7 @@ import {
   FindResponse,
   UpdateRequest,
   WithObjectResponse,
-} from 'src/common/proto-dto/financial-service/financial-service.pb';
+} from '../common/proto-dto/financial-service/financial-service.pb';
 import { makeResponseTaskPrice } from '../common/utils';
 
 @Injectable()
