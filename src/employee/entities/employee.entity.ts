@@ -12,10 +12,10 @@ export class Employee {
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'TaskPrice' }] })
   projectHistory: TaskPrice[];
 
-  @Prop({ type: Date })
+  @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
-  @Prop({ type: Date })
+  @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 }
 
