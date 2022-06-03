@@ -13,4 +13,7 @@ export default Joi.object<ConfigInterface>({
 
   TASKPRICE_HOST: Joi.string().hostname().default('0.0.0.0'),
   TASKPRICE_PORT: Joi.number().default(3000),
+
+  PROJECT_SERVICE_HOST: Joi.string(),
+  PROJECT_SERVICE_PORT: Joi.number(),
 });

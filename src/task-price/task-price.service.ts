@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { TaskPrice, TaskPriceDocument } from './entities/task-price.entity';
 import {
@@ -9,13 +9,40 @@ import {
   WithObjectResponse,
 } from '../common/proto-dto/financial-service/financial-service.pb';
 import { makeResponseTaskPrice } from '../common/utils';
+import { ProjectServiceClient, PROJECT_SERVICE_NAME } from '../common/proto-dto/project-service/project.pb';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class TaskPriceService {
-  constructor(@InjectModel(TaskPrice.name) private taskPriceModel: Model<TaskPriceDocument>) {}
+  constructor(
+    @InjectModel(TaskPrice.name) private taskPriceModel: Model<TaskPriceDocument>,
+    @Inject(PROJECT_SERVICE_NAME)
+    private readonly grpcClient: ClientGrpc,
+  ) {}
+
+  private projectProjectServiceClient: ProjectServiceClient;
+
+  public onModuleInit(): void {
+    this.projectProjectServiceClient = this.grpcClient.getService<ProjectServiceClient>(PROJECT_SERVICE_NAME);
+  }
 
   async create(createTaskBody: CreateRequest): Promise<WithObjectResponse> {
     const createdTaskModel = await this.taskPriceModel.create(createTaskBody);
+
+    const statusOfProjectInProjecService = await firstValueFrom(
+      this.projectProjectServiceClient.findOne({
+        projectId: createTaskBody.taskId,
+      }),
+    );
+
+    if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Project not Valid.',
+        data: null,
+      };
+    }
 
     return makeResponseTaskPrice(createdTaskModel);
   }
@@ -38,6 +65,22 @@ export class TaskPriceService {
       taskId,
       updatedAt: Date.now(),
     };
+
+    if (taskId) {
+      const statusOfProjectInProjecService = await firstValueFrom(
+        this.projectProjectServiceClient.findOne({
+          projectId: taskId,
+        }),
+      );
+
+      if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
+        return {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Project not Valid.',
+          data: null,
+        };
+      }
+    }
 
     await this.taskPriceModel.findOneAndUpdate({ _id: id }, taskPriceWithUpdateTime);
     const updated = await this.taskPriceModel.findOne({ _id: id });

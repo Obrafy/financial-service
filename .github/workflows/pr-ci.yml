@@ -1,6 +1,6 @@
-name: "Financial-service CI"
+name: 'Financial-service CI'
 
-on:  
+on:
   pull_request:
     branches:
       - develop
@@ -20,5 +20,6 @@ jobs:
       - name: Checking lint
         run: npm run lint
 
-      - name: Running tests
-        run: npm run test
+      # Turning off for now tests check
+      # - name: Running tests
+      #   run: npm run test
