@@ -15,4 +15,7 @@ export default (): ConfigInterface => ({
 
   PROJECT_SERVICE_HOST: process.env.PROJECT_SERVICE_HOST,
   PROJECT_SERVICE_PORT: +process.env.PROJECT_SERVICE_PORT,
+
+  AUTH_SERVICE_HOST: process.env.AUTH_SERVICE_HOST,
+  AUTH_SERVICE_PORT: +process.env.AUTH_SERVICE_HOST,
 });

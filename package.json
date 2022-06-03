@@ -23,7 +23,9 @@
     "proto:run:financial": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/proto/proto-files --ts_proto_out=src/common/proto-dto node_modules/proto/proto-files/financial-service/financial-service.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
     "proto:run-local:project": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=../proto/proto-files --ts_proto_out=src/common/proto-dto ../proto/proto-files/project-service/project.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
     "proto:run:project": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/proto/proto-files --ts_proto_out=src/common/proto-dto node_modules/proto/proto-files/project-service/project.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
-    "proto:all": "npm run proto:install && npm run proto:run:financial && proto:run:project"
+    "proto:run-local:auth": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=../proto/proto-files --ts_proto_out=src/common/proto-dto ../proto/proto-files/authentication-service/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
+    "proto:run:auth": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/proto/proto-files --ts_proto_out=src/common/proto-dto node_modules/proto/proto-files/authentication-service/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb --experimental_allow_proto3_optional",
+    "proto:all": "npm run proto:install && npm run proto:run:financial && npm run proto:run:project && npm run proto:run:auth"
   },
   "dependencies": {
     "@golevelup/ts-jest": "^0.3.3",

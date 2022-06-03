@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Employee, EmployeeDocument } from './entities/employee.entity';
 import {
@@ -9,12 +9,42 @@ import {
   pUpdateRequest,
 } from '../common/proto-dto/financial-service/financial-service.pb';
 import { makeResponseEmployee } from '../common/utils';
+import {
+  UserManagementServiceClient,
+  USER_MANAGEMENT_SERVICE_NAME,
+} from 'src/common/proto-dto/authentication-service/auth.pb';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class EmployeeService {
-  constructor(@InjectModel(Employee.name) private employeeModel: Model<EmployeeDocument>) {}
+  constructor(
+    @InjectModel(Employee.name) private employeeModel: Model<EmployeeDocument>,
+    @Inject(USER_MANAGEMENT_SERVICE_NAME)
+    private readonly grpcClient: ClientGrpc,
+  ) {}
+
+  private userServiceGrpcClient: UserManagementServiceClient;
+
+  public onModuleInit(): void {
+    this.userServiceGrpcClient = this.grpcClient.getService<UserManagementServiceClient>(USER_MANAGEMENT_SERVICE_NAME);
+  }
 
   async create(employeeToCreate: pCreateRequest): Promise<pResponseWithObject> {
+    const statusOfUserInUserService = await firstValueFrom(
+      this.userServiceGrpcClient.findUserById({
+        userId: employeeToCreate.employeeId,
+      }),
+    );
+
+    if (statusOfUserInUserService.status !== HttpStatus.OK) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'User not Valid.',
+        data: null,
+      };
+    }
+
     const createdEmployee = await this.employeeModel.create(employeeToCreate);
 
     return makeResponseEmployee(createdEmployee);
@@ -38,6 +68,20 @@ export class EmployeeService {
       projectHistory,
       updatedAt: Date.now(),
     };
+
+    const statusOfUserInUserService = await firstValueFrom(
+      this.userServiceGrpcClient.findUserById({
+        userId: employeeId,
+      }),
+    );
+
+    if (statusOfUserInUserService.status !== HttpStatus.OK) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'User not Valid.',
+        data: null,
+      };
+    }
 
     await this.employeeModel.findOneAndUpdate({ _id: id }, employeeToUpdate);
     const updatedModel = await this.employeeModel.findOne({ _id: id });
