@@ -620,12 +620,11 @@
   version "1.0.1"
   resolved "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-1.0.1.tgz"
 
-"@nestjs/microservices@^8.4.5":
-  version "8.4.5"
-  resolved "https://registry.npmjs.org/@nestjs/microservices/-/microservices-8.4.5.tgz"
+"@nestjs/microservices@^8.4.6":
+  version "8.4.6"
+  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-8.4.6.tgz#3676d1f12f2ece0e9456aa0c79697f02183a7a4a"
   dependencies:
     iterare "1.2.1"
-    json-socket "0.3.0"
     tslib "2.4.0"
 
 "@nestjs/mongoose@^9.0.3":
@@ -3151,10 +3150,6 @@ json-schema-traverse@^0.4.1:
 json-schema-traverse@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz"
-
-json-socket@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/json-socket/-/json-socket-0.3.0.tgz"
 
 json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
