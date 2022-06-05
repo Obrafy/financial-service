@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { BadRequestException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Employee, EmployeeDocument } from './entities/employee.entity';
 import {
@@ -20,6 +20,7 @@ export class EmployeeService {
     private projectPriceService: ProjectPriceService,
   ) {}
 
+  private readonly logger = new Logger(EmployeeService.name);
   private userServiceGrpcClient: UserManagementServiceClient;
 
   /**
@@ -27,43 +28,57 @@ export class EmployeeService {
    */
   public onModuleInit(): void {
     this.userServiceGrpcClient = this.grpcClient.getService<UserManagementServiceClient>(USER_MANAGEMENT_SERVICE_NAME);
+    this.logger.log('gRPC UserService Client Initialized');
   }
 
   /**
-   *
-   * @param employeeToCreate
-   * @returns
+   * Receive an EmployeeId to call UserService to see if it exists,
+   * if it's not a valid ID, throw an exception
+   * @param employeeId
    */
-  async create(employeeToCreate: CreateEmployeeDTO): Promise<EmployeeDocument> {
-    // Search for a valid user:
-    const statusOfUserInUserService = await firstValueFrom(
+  private async _validateEmployeeIdOrException(employeeId: string): Promise<void> {
+    this.logger.debug('Trying to validate EmployeeId');
+    const requestedEmployeeIdObj = await firstValueFrom(
       this.userServiceGrpcClient.findUserById({
-        userId: employeeToCreate.employeeId,
+        userId: employeeId,
       }),
     );
 
-    if (statusOfUserInUserService.status !== HttpStatus.OK) {
+    this.logger.debug('Returned response from UserService', requestedEmployeeIdObj);
+    if (requestedEmployeeIdObj.status !== HttpStatus.OK) {
       throw new BadRequestException('This employeeId does not exists.');
     }
+  }
 
-    //Search for a valid project-price:
-    const isValidProjectPricePromise = employeeToCreate.projectHistory.map(async (project) => {
-      const result = await this.projectPriceService.findOne(project);
+  /**
+   * Receive an array of ProjectPrice ID and call its service to valid them.
+   * @param projectHistoryIDs An array of ProjectPrice IDs
+   */
+  private async _validateProjectHistoryIDsOrException(projectHistoryIDs: string[]): Promise<void> {
+    this.logger.debug('Trying to validate all ProjectHistory used');
+    projectHistoryIDs.map(async (projectId) => {
+      const result = await this.projectPriceService.findOne(projectId);
 
-      if (result.errors !== null) {
-        return false;
+      if (!result) {
+        throw new BadRequestException(`The projectId of value ${projectId} is not valid`);
       }
-
-      return true;
     });
+  }
 
-    const isValidProjectResolved = await Promise.all(isValidProjectPricePromise);
+  /**
+   * Receives an employeeId and a worked projectHistory to store the worker payment history
+   * @param employeeToCreate
+   * @returns
+   */
+  async create({ employeeId, projectHistory }: CreateEmployeeDTO): Promise<EmployeeDocument> {
+    this.logger.log('Create', employeeId, projectHistory);
 
-    if (isValidProjectResolved.includes(false)) {
-      throw new BadRequestException('Any projectId does not exists.');
-    }
+    Promise.all([
+      await this._validateEmployeeIdOrException(employeeId),
+      await this._validateProjectHistoryIDsOrException(projectHistory),
+    ]);
 
-    const createdEmployee = await this.employeeModel.create(employeeToCreate);
+    const createdEmployee = await this.employeeModel.create({ employeeId, projectHistory });
 
     return createdEmployee;
   }
@@ -73,6 +88,7 @@ export class EmployeeService {
    * @returns An array of valid Employees with their projectHistory
    */
   async findAll(): Promise<EmployeeDocument[]> {
+    this.logger.log('findAll');
     const allEmployees = await this.employeeModel.find().populate({ path: 'projectHistory' });
 
     return allEmployees;
@@ -84,7 +100,12 @@ export class EmployeeService {
    * @returns The Model of Employee
    */
   async findOne(id: string): Promise<EmployeeDocument> {
+    this.logger.log('findOne', id);
     const searchedEmployee = await this.employeeModel.findOne({ _id: id }).populate({ path: 'projectHistory' });
+
+    if (!searchedEmployee) {
+      throw new NotFoundException(`The ${id} is not a valid one.`);
+    }
 
     return searchedEmployee;
   }
@@ -95,38 +116,17 @@ export class EmployeeService {
    * @returns The Model of the updated Employee
    */
   async update({ id, data: { projectHistory, employeeId } }: UpdateEmployeeDTO): Promise<EmployeeDocument> {
+    this.logger.log('update', id, projectHistory, employeeId);
     const employeeToUpdate = {
       employeeId,
       projectHistory,
       updatedAt: Date.now(),
     };
 
-    const statusOfUserInUserService = await firstValueFrom(
-      this.userServiceGrpcClient.findUserById({
-        userId: employeeId,
-      }),
-    );
-
-    if (statusOfUserInUserService.status !== HttpStatus.OK) {
-      throw new BadRequestException('This employeeId does not exists.');
-    }
-
-    //Search for a valid project-price:
-    const isValidProjectPricePromise = projectHistory.map(async (project) => {
-      const result = await this.projectPriceService.findOne(project);
-
-      if (result.errors !== null) {
-        return false;
-      }
-
-      return true;
-    });
-
-    const isValidProjectResolved = await Promise.all(isValidProjectPricePromise);
-
-    if (isValidProjectResolved.includes(false)) {
-      throw new BadRequestException('Any projectId does not exists.');
-    }
+    Promise.all([
+      await this._validateEmployeeIdOrException(employeeId),
+      await this._validateProjectHistoryIDsOrException(projectHistory),
+    ]);
 
     await this.employeeModel.findOneAndUpdate({ _id: id }, employeeToUpdate);
     const updatedModel = await this.employeeModel.findOne({ _id: id });
@@ -140,6 +140,7 @@ export class EmployeeService {
    * @returns Nothing
    */
   async remove(id: string): Promise<void> {
+    this.logger.log('remove', id);
     const { deletedCount } = await this.employeeModel.deleteOne({ _id: id });
 
     if (deletedCount === 0) {

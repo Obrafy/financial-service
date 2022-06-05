@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { BadRequestException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ProjectPrice, ProjectPriceDocument } from './entities/project-price.entity';
 import { ProjectServiceClient, PROJECT_SERVICE_NAME } from '../common/proto-dto/project-service/project.pb';
@@ -16,12 +16,33 @@ export class ProjectPriceService {
   ) {}
 
   private projectProjectServiceClient: ProjectServiceClient;
+  private readonly logger = new Logger(ProjectPriceService.name);
 
   /**
    * Is needed to load the gRPC client with the specific ServiceCLient loaded from a proto file
    */
   public onModuleInit(): void {
     this.projectProjectServiceClient = this.grpcClient.getService<ProjectServiceClient>(PROJECT_SERVICE_NAME);
+    this.logger.log('gRPC ProjectService Client Initialized');
+  }
+
+  /**
+   * Receive a projectId to call ProjectService to see if it exists,
+   * if it's not a valid ID, throw an exception
+   * @param projectId
+   */
+  private async _validateProjectIdOrException(projectId: string): Promise<void> {
+    this.logger.debug('Trying to validate projectId');
+    const requestedObjectFromProjectService = await firstValueFrom(
+      this.projectProjectServiceClient.findOne({
+        projectId: projectId,
+      }),
+    );
+
+    this.logger.debug('Response From PS client', requestedObjectFromProjectService);
+    if (requestedObjectFromProjectService.status !== HttpStatus.OK) {
+      throw new BadRequestException('This projectId does not exists.');
+    }
   }
 
   /**
@@ -30,15 +51,9 @@ export class ProjectPriceService {
    * @returns The ProjectPrice object
    */
   async create({ projectId, price }: CreateProjectPriceDTO): Promise<ProjectPriceDocument> {
-    const statusOfProjectInProjecService = await firstValueFrom(
-      this.projectProjectServiceClient.findOne({
-        projectId: projectId,
-      }),
-    );
+    this.logger.log('Create', projectId, price);
 
-    if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
-      throw new BadRequestException('This projectId does not exists.');
-    }
+    await this._validateProjectIdOrException(projectId);
 
     const createdProjectModel = await this.projectPriceModel.create({ projectId, price });
 
@@ -50,6 +65,7 @@ export class ProjectPriceService {
    * @returns Array of ProjectPrice
    */
   async findAll(): Promise<ProjectPriceDocument[]> {
+    this.logger.log('findAll');
     const allProjectPrices = await this.projectPriceModel.find();
 
     return allProjectPrices;
@@ -61,7 +77,12 @@ export class ProjectPriceService {
    * @returns Specific ProjectPrice model
    */
   async findOne(id: string): Promise<ProjectPriceDocument> {
+    this.logger.log('findOne', id);
     const requestedModel = await this.projectPriceModel.findOne({ _id: id });
+
+    if (!requestedModel) {
+      throw new NotFoundException(`Can't find a record valid for ${id}`);
+    }
 
     return requestedModel;
   }
@@ -72,6 +93,7 @@ export class ProjectPriceService {
    * @returns The new Updated Model
    */
   async update({ id, data }: UpdateProjectPriceDTO): Promise<ProjectPriceDocument> {
+    this.logger.log('update', id, data);
     const projectPriceWithUpdateTime = {
       price: data.price,
       projectId: data.projectId,
@@ -79,20 +101,12 @@ export class ProjectPriceService {
     };
 
     if (data.projectId) {
-      const statusOfProjectInProjecService = await firstValueFrom(
-        this.projectProjectServiceClient.findOne({
-          projectId: data.projectId,
-        }),
-      );
-
-      if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
-        throw new BadRequestException('This projectId does not exists.');
-      }
+      await this._validateProjectIdOrException(data.projectId);
     }
 
     const foundModel = await this.projectPriceModel.findOneAndUpdate({ _id: id }, projectPriceWithUpdateTime);
     if (!foundModel) {
-      throw new NotFoundException(`The ${id} is invalid`);
+      throw new NotFoundException(`The ${id} is not a valid one.`);
     }
 
     const updated = await this.projectPriceModel.findOne({ _id: id });
@@ -106,10 +120,11 @@ export class ProjectPriceService {
    * @returns Nothing
    */
   async remove(id: string): Promise<void> {
+    this.logger.log('remove', id);
     const { deletedCount } = await this.projectPriceModel.deleteOne({ _id: id });
 
     if (deletedCount === 0) {
-      throw new NotFoundException('It is not a valid record ID.');
+      throw new NotFoundException(`The ${id} is not a valid one.`);
     }
   }
 }
