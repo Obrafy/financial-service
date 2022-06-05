@@ -15,6 +15,7 @@ import {
 } from 'src/common/proto-dto/authentication-service/auth.pb';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { TaskPriceService } from 'src/task-price/task-price.service';
 
 @Injectable()
 export class EmployeeService {
@@ -22,6 +23,7 @@ export class EmployeeService {
     @InjectModel(Employee.name) private employeeModel: Model<EmployeeDocument>,
     @Inject(USER_MANAGEMENT_SERVICE_NAME)
     private readonly grpcClient: ClientGrpc,
+    private projectPriceService: TaskPriceService,
   ) {}
 
   private userServiceGrpcClient: UserManagementServiceClient;
@@ -31,6 +33,7 @@ export class EmployeeService {
   }
 
   async create(employeeToCreate: pCreateRequest): Promise<pResponseWithObject> {
+    // Search for a valid user:
     const statusOfUserInUserService = await firstValueFrom(
       this.userServiceGrpcClient.findUserById({
         userId: employeeToCreate.employeeId,
@@ -41,6 +44,27 @@ export class EmployeeService {
       return {
         status: HttpStatus.BAD_REQUEST,
         error: 'User not Valid.',
+        data: null,
+      };
+    }
+
+    //Search for a valid project-price:
+    const isValidProjectPricePromise = employeeToCreate.projectHistory.map(async (project) => {
+      const result = await this.projectPriceService.findOne(project);
+
+      if (result.error !== null) {
+        return false;
+      }
+
+      return true;
+    });
+
+    const isValidProjectResolved = await Promise.all(isValidProjectPricePromise);
+
+    if (isValidProjectResolved.includes(false)) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Project not Valid.',
         data: null,
       };
     }
@@ -82,6 +106,27 @@ export class EmployeeService {
         data: null,
       };
     }
+
+    // //Search for a valid project-price:
+    // const isValidProjectPricePromise = projectHistory.map(async (project) => {
+    //   const result = await this.projectPriceService.findOne(project);
+
+    //   if (result.error !== null) {
+    //     return false;
+    //   }
+
+    //   return true;
+    // });
+
+    // const isValidProjectResolved = await Promise.all(isValidProjectPricePromise);
+
+    // if (isValidProjectResolved.includes(false)) {
+    //   return {
+    //     status: HttpStatus.BAD_REQUEST,
+    //     error: 'Project not Valid.',
+    //     data: null,
+    //   };
+    // }
 
     await this.employeeModel.findOneAndUpdate({ _id: id }, employeeToUpdate);
     const updatedModel = await this.employeeModel.findOne({ _id: id });

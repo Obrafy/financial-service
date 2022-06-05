@@ -28,8 +28,6 @@ export class TaskPriceService {
   }
 
   async create(createTaskBody: CreateRequest): Promise<WithObjectResponse> {
-    const createdTaskModel = await this.taskPriceModel.create(createTaskBody);
-
     const statusOfProjectInProjecService = await firstValueFrom(
       this.projectProjectServiceClient.findOne({
         projectId: createTaskBody.taskId,
@@ -43,6 +41,8 @@ export class TaskPriceService {
         data: null,
       };
     }
+
+    const createdTaskModel = await this.taskPriceModel.create(createTaskBody);
 
     return makeResponseTaskPrice(createdTaskModel);
   }

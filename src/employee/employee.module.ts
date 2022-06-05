@@ -9,9 +9,11 @@ import { ConfigInterface } from 'src/config';
 import { makeMicroserviceUrl } from 'src/common/helpers/make-microservice';
 import { join } from 'path';
 import { AUTH_PACKAGE_NAME, USER_MANAGEMENT_SERVICE_NAME } from 'src/common/proto-dto/authentication-service/auth.pb';
+import { TaskPriceModule } from 'src/task-price/task-price.module';
 
 @Module({
   imports: [
+    TaskPriceModule,
     MongooseModule.forFeature([{ name: Employee.name, schema: EmployeeSchema }]),
     ClientsModule.registerAsync([
       {
