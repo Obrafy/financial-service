@@ -1,13 +1,13 @@
 import { HttpStatus } from '@nestjs/common';
 
-export function makeResponseTaskPrice(data, statusCode = HttpStatus.OK, error = null) {
+export function makeResponseProjectPrice(data, statusCode = HttpStatus.OK, error = null) {
   if (!data.length) {
     return {
       status: statusCode,
       error: error,
       data: {
         id: data.id,
-        taskId: data.taskId,
+        projectId: data.projectId,
         price: data.price,
         createdAt: data.createdAt.getTime(),
         updatedAt: data.updatedAt?.getTime(),
@@ -15,7 +15,7 @@ export function makeResponseTaskPrice(data, statusCode = HttpStatus.OK, error = 
     };
   }
 
-  const arrayDataTransformed = _buildArrayResponseForTaskPrice(data);
+  const arrayDataTransformed = _buildArrayResponseForProjectPrice(data);
 
   return {
     status: statusCode,
@@ -24,14 +24,14 @@ export function makeResponseTaskPrice(data, statusCode = HttpStatus.OK, error = 
   };
 }
 
-function _buildArrayResponseForTaskPrice(arrayData) {
-  const returned = arrayData.map((taskPrice) => {
+function _buildArrayResponseForProjectPrice(arrayData) {
+  const returned = arrayData.map((projectPrice) => {
     return {
-      id: taskPrice.id,
-      taskId: taskPrice.taskId,
-      price: taskPrice.price,
-      createdAt: taskPrice.createdAt.getTime(),
-      updatedAt: taskPrice.updatedAt?.getTime(),
+      id: projectPrice.id,
+      projectId: projectPrice.projectId,
+      price: projectPrice.price,
+      createdAt: projectPrice.createdAt.getTime(),
+      updatedAt: projectPrice.updatedAt?.getTime(),
     };
   });
 

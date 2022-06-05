@@ -6,7 +6,7 @@ import { AppController } from './app.controller';
 
 import { ConfigInterface, loader, validationSchema } from './config';
 import { EmployeeModule } from './employee/employee.module';
-import { TaskPriceModule } from './task-price/task-price.module';
+import { ProjectPriceModule } from './project-price/project-price.module';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { TaskPriceModule } from './task-price/task-price.module';
 
     EmployeeModule,
 
-    TaskPriceModule,
+    ProjectPriceModule,
   ],
   controllers: [AppController],
   providers: [],

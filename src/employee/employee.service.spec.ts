@@ -53,17 +53,17 @@ describe('EmployeeService', () => {
 
     it.todo('test bad payload');
     it.todo('test returning duplicate values error');
-    it.todo('test returning error when dont find taskId');
+    it.todo('test returning error when dont find projectId');
   });
 
   describe('findAll', () => {
-    it.todo('should get all tasks');
+    it.todo('should get all projects');
 
     it.todo('should return an empty array when dont have data');
   });
 
   describe('findOne', () => {
-    it.todo('should find one task in DB');
+    it.todo('should find one project in DB');
 
     it.todo('should return an empty object when dont have this specific id');
     it.todo('should find a specific object among many objects');

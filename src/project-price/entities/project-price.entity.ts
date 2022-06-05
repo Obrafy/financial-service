@@ -2,12 +2,12 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
 
-export type TaskPriceDocument = TaskPrice & Document;
+export type ProjectPriceDocument = ProjectPrice & Document;
 
 @Schema()
-export class TaskPrice {
+export class ProjectPrice {
   @Prop({ type: mongoose.Types.ObjectId, required: true })
-  taskId: string;
+  projectId: string;
 
   @Prop()
   price: number;
@@ -19,4 +19,4 @@ export class TaskPrice {
   updatedAt: Date;
 }
 
-export const TaskPriceSchema = SchemaFactory.createForClass(TaskPrice);
+export const ProjectPriceSchema = SchemaFactory.createForClass(ProjectPrice);

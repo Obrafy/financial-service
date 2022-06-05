@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import { TaskPrice } from 'src/task-price/entities/task-price.entity';
+import { ProjectPrice } from 'src/project-price/entities/project-price.entity';
 
 export type EmployeeDocument = Employee & Document;
 
@@ -9,8 +9,8 @@ export class Employee {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: '', required: true })
   employeeId: string;
 
-  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'TaskPrice' }] })
-  projectHistory: TaskPrice[];
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'ProjectPrice' }] })
+  projectHistory: ProjectPrice[];
 
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;

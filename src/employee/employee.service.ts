@@ -8,7 +8,7 @@ import {
 } from 'src/common/proto-dto/authentication-service/auth.pb';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { TaskPriceService } from 'src/task-price/task-price.service';
+import { ProjectPriceService } from 'src/project-price/project-price.service';
 import { CreateEmployeeDTO, UpdateEmployeeDTO } from './dto/employee.dto';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class EmployeeService {
     @InjectModel(Employee.name) private employeeModel: Model<EmployeeDocument>,
     @Inject(USER_MANAGEMENT_SERVICE_NAME)
     private readonly grpcClient: ClientGrpc,
-    private projectPriceService: TaskPriceService,
+    private projectPriceService: ProjectPriceService,
   ) {}
 
   private userServiceGrpcClient: UserManagementServiceClient;

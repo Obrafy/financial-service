@@ -5,15 +5,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Employee, EmployeeSchema } from './entities/employee.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ConfigInterface } from 'src/config';
-import { makeMicroserviceUrl } from 'src/common/helpers/make-microservice';
+import { ConfigInterface } from '../config';
+import { makeMicroserviceUrl } from '../common/helpers/make-microservice';
 import { join } from 'path';
-import { AUTH_PACKAGE_NAME, USER_MANAGEMENT_SERVICE_NAME } from 'src/common/proto-dto/authentication-service/auth.pb';
-import { TaskPriceModule } from 'src/task-price/task-price.module';
+import { AUTH_PACKAGE_NAME, USER_MANAGEMENT_SERVICE_NAME } from '../common/proto-dto/authentication-service/auth.pb';
+import { ProjectPriceModule } from '../project-price/project-price.module';
 
 @Module({
   imports: [
-    TaskPriceModule,
+    ProjectPriceModule,
     MongooseModule.forFeature([{ name: Employee.name, schema: EmployeeSchema }]),
     ClientsModule.registerAsync([
       {

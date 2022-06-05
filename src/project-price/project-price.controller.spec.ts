@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TaskPriceController } from './task-price.controller';
-import { TaskPriceService } from './task-price.service';
+import { ProjectPriceController } from './project-price.controller';
+import { ProjectPriceService } from './project-price.service';
 
-describe('TaskPriceController', () => {
-  let controller: TaskPriceController;
-  let mockedService: TaskPriceService;
+describe('ProjectPriceController', () => {
+  let controller: ProjectPriceController;
+  let mockedService: ProjectPriceService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [TaskPriceController],
+      controllers: [ProjectPriceController],
       providers: [
         {
-          provide: TaskPriceService,
+          provide: ProjectPriceService,
           useValue: {
             findAll: jest.fn(),
             findOne: jest.fn(),
@@ -22,8 +22,8 @@ describe('TaskPriceController', () => {
       ],
     }).compile();
 
-    controller = module.get<TaskPriceController>(TaskPriceController);
-    mockedService = module.get<TaskPriceService>(TaskPriceService);
+    controller = module.get<ProjectPriceController>(ProjectPriceController);
+    mockedService = module.get<ProjectPriceService>(ProjectPriceService);
   });
 
   afterEach(() => {
@@ -42,7 +42,7 @@ describe('TaskPriceController', () => {
   describe('create', () => {
     it.todo('should return a created model');
     it.todo('should return an error if receive a bad payload');
-    it.todo('should return a 404 if taskId is not found');
+    it.todo('should return a 404 if projectId is not found');
   });
 
   describe('findAll', () => {

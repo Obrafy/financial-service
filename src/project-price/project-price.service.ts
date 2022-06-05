@@ -1,16 +1,16 @@
 import { Model } from 'mongoose';
 import { BadRequestException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { TaskPrice, TaskPriceDocument } from './entities/task-price.entity';
+import { ProjectPrice, ProjectPriceDocument } from './entities/project-price.entity';
 import { ProjectServiceClient, PROJECT_SERVICE_NAME } from '../common/proto-dto/project-service/project.pb';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { CreateProjectPriceDTO, UpdateProjectPriceDTO } from './dtos/project-price.dto';
+import { CreateProjectPriceDTO, UpdateProjectPriceDTO } from '../project-price/dto/project-price.dto';
 
 @Injectable()
-export class TaskPriceService {
+export class ProjectPriceService {
   constructor(
-    @InjectModel(TaskPrice.name) private taskPriceModel: Model<TaskPriceDocument>,
+    @InjectModel(ProjectPrice.name) private projectPriceModel: Model<ProjectPriceDocument>,
     @Inject(PROJECT_SERVICE_NAME)
     private readonly grpcClient: ClientGrpc,
   ) {}
@@ -29,10 +29,10 @@ export class TaskPriceService {
    * @param param0 Expects an object with projecId from a valid project and its price
    * @returns The ProjectPrice object
    */
-  async create({ taskId, price }: CreateProjectPriceDTO): Promise<TaskPriceDocument> {
+  async create({ projectId, price }: CreateProjectPriceDTO): Promise<ProjectPriceDocument> {
     const statusOfProjectInProjecService = await firstValueFrom(
       this.projectProjectServiceClient.findOne({
-        projectId: taskId,
+        projectId: projectId,
       }),
     );
 
@@ -40,19 +40,19 @@ export class TaskPriceService {
       throw new BadRequestException('This projectId does not exists.');
     }
 
-    const createdTaskModel = await this.taskPriceModel.create({ taskId, price });
+    const createdProjectModel = await this.projectPriceModel.create({ projectId, price });
 
-    return createdTaskModel;
+    return createdProjectModel;
   }
 
   /**
    * Return all records created from a valid ProjectId with their prices
    * @returns Array of ProjectPrice
    */
-  async findAll(): Promise<TaskPriceDocument[]> {
-    const allTaskPrices = await this.taskPriceModel.find();
+  async findAll(): Promise<ProjectPriceDocument[]> {
+    const allProjectPrices = await this.projectPriceModel.find();
 
-    return allTaskPrices;
+    return allProjectPrices;
   }
 
   /**
@@ -60,8 +60,8 @@ export class TaskPriceService {
    * @param id a valid ProjectPrice
    * @returns Specific ProjectPrice model
    */
-  async findOne(id: string): Promise<TaskPriceDocument> {
-    const requestedModel = await this.taskPriceModel.findOne({ _id: id });
+  async findOne(id: string): Promise<ProjectPriceDocument> {
+    const requestedModel = await this.projectPriceModel.findOne({ _id: id });
 
     return requestedModel;
   }
@@ -71,17 +71,17 @@ export class TaskPriceService {
    * @param param0 expects an valid ID for a ProjectPrice, and its data to be updated
    * @returns The new Updated Model
    */
-  async update({ id, data }: UpdateProjectPriceDTO): Promise<TaskPriceDocument> {
-    const taskPriceWithUpdateTime = {
+  async update({ id, data }: UpdateProjectPriceDTO): Promise<ProjectPriceDocument> {
+    const projectPriceWithUpdateTime = {
       price: data.price,
-      taskId: data.taskId,
+      projectId: data.projectId,
       updatedAt: Date.now(),
     };
 
-    if (data.taskId) {
+    if (data.projectId) {
       const statusOfProjectInProjecService = await firstValueFrom(
         this.projectProjectServiceClient.findOne({
-          projectId: data.taskId,
+          projectId: data.projectId,
         }),
       );
 
@@ -90,12 +90,12 @@ export class TaskPriceService {
       }
     }
 
-    const foundModel = await this.taskPriceModel.findOneAndUpdate({ _id: id }, taskPriceWithUpdateTime);
+    const foundModel = await this.projectPriceModel.findOneAndUpdate({ _id: id }, projectPriceWithUpdateTime);
     if (!foundModel) {
       throw new NotFoundException(`The ${id} is invalid`);
     }
 
-    const updated = await this.taskPriceModel.findOne({ _id: id });
+    const updated = await this.projectPriceModel.findOne({ _id: id });
 
     return updated;
   }
@@ -106,7 +106,7 @@ export class TaskPriceService {
    * @returns Nothing
    */
   async remove(id: string): Promise<void> {
-    const { deletedCount } = await this.taskPriceModel.deleteOne({ _id: id });
+    const { deletedCount } = await this.projectPriceModel.deleteOne({ _id: id });
 
     if (deletedCount === 0) {
       throw new NotFoundException('It is not a valid record ID.');

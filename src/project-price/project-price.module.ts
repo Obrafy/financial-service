@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TaskPriceService } from './task-price.service';
-import { TaskPriceController } from './task-price.controller';
+import { ProjectPriceService } from './project-price.service';
+import { ProjectPriceController } from './project-price.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TaskPrice, TaskPriceSchema } from './entities/task-price.entity';
+import { ProjectPrice, ProjectPriceSchema } from './entities/project-price.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PROJECT_SERVICE_NAME, PROJECT_PACKAGE_NAME } from '../common/proto-dto/project-service/project.pb';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -12,7 +12,7 @@ import { join } from 'path';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: TaskPrice.name, schema: TaskPriceSchema }]),
+    MongooseModule.forFeature([{ name: ProjectPrice.name, schema: ProjectPriceSchema }]),
     ClientsModule.registerAsync([
       {
         name: PROJECT_SERVICE_NAME,
@@ -32,8 +32,8 @@ import { join } from 'path';
       },
     ]),
   ],
-  controllers: [TaskPriceController],
-  providers: [TaskPriceService],
-  exports: [TaskPriceService],
+  controllers: [ProjectPriceController],
+  providers: [ProjectPriceService],
+  exports: [ProjectPriceService],
 })
-export class TaskPriceModule {}
+export class ProjectPriceModule {}

@@ -8,10 +8,10 @@ export const protobufPackage = 'financialProject';
 
 export interface Empty {}
 
-/** <-------------- TaskPrice ---------------> */
-export interface TaskPriceObject {
+/** <-------------- ProjectPrice ---------------> */
+export interface ProjectPriceObject {
   id: string;
-  taskId: string;
+  projectId: string;
   price: number;
   createdAt: number;
   updatedAt: number;
@@ -20,7 +20,7 @@ export interface TaskPriceObject {
 export interface WithObjectResponse {
   status: number;
   error: string[];
-  data: TaskPriceObject | undefined;
+  data: ProjectPriceObject | undefined;
 }
 
 export interface FindByIdRequest {
@@ -28,24 +28,24 @@ export interface FindByIdRequest {
 }
 
 export interface CreateRequest {
-  taskId: string;
+  projectId: string;
   price: number;
 }
 
 export interface FindResponse {
   status: number;
   error: string[];
-  data: TaskPriceObject[];
+  data: ProjectPriceObject[];
 }
 
-export interface UpdateTaskPriceObject {
-  taskId?: string | undefined;
+export interface UpdateProjectPriceObject {
+  projectId?: string | undefined;
   price?: number | undefined;
 }
 
 export interface UpdateRequest {
   id: string;
-  data: UpdateTaskPriceObject | undefined;
+  data: UpdateProjectPriceObject | undefined;
 }
 
 /** <-------------- Employee ---------------> */
@@ -90,7 +90,7 @@ export interface pResponseArrayObject {
 
 export const FINANCIAL_PROJECT_PACKAGE_NAME = 'financialProject';
 
-export interface TaskPriceClient {
+export interface ProjectPriceClient {
   create(request: CreateRequest): Observable<WithObjectResponse>;
 
   find(request: Empty): Observable<FindResponse>;
@@ -102,7 +102,7 @@ export interface TaskPriceClient {
   delete(request: FindByIdRequest): Observable<WithObjectResponse>;
 }
 
-export interface TaskPriceController {
+export interface ProjectPriceController {
   create(request: CreateRequest): Promise<WithObjectResponse> | Observable<WithObjectResponse> | WithObjectResponse;
 
   find(request: Empty): Promise<FindResponse> | Observable<FindResponse> | FindResponse;
@@ -114,22 +114,22 @@ export interface TaskPriceController {
   delete(request: FindByIdRequest): Promise<WithObjectResponse> | Observable<WithObjectResponse> | WithObjectResponse;
 }
 
-export function TaskPriceControllerMethods() {
+export function ProjectPriceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = ['create', 'find', 'findOne', 'update', 'delete'];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod('TaskPrice', method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod('ProjectPrice', method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod('TaskPrice', method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod('ProjectPrice', method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const TASK_PRICE_SERVICE_NAME = 'TaskPrice';
+export const PROJECT_PRICE_SERVICE_NAME = 'ProjectPrice';
 
 export interface EmployeeClient {
   create(request: pCreateRequest): Observable<pResponseWithObject>;
