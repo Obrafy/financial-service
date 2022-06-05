@@ -1,4 +1,4 @@
-import { IsMongoId } from 'class-validator';
+import { IsMongoId, ValidateNested } from 'class-validator';
 import {
   pCreateRequest,
   pFindByIdRequest,
@@ -19,15 +19,17 @@ export class FindEmployeeByIdDTO implements pFindByIdRequest {
   id: string;
 }
 
-export class UpdateEmployeeDTO implements pUpdateRequest {
-  id: string;
-  data: _UpdatedEmployeeData;
-}
-
 class _UpdatedEmployeeData implements UpdateEmployeeData {
   @IsMongoId()
   employeeId?: string;
 
   @IsMongoId({ each: true })
   projectHistory: string[];
+}
+export class UpdateEmployeeDTO implements pUpdateRequest {
+  @IsMongoId()
+  id: string;
+
+  @ValidateNested()
+  data: _UpdatedEmployeeData;
 }

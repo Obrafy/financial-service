@@ -1,4 +1,4 @@
-import { IsMongoId, IsNumber } from 'class-validator';
+import { IsMongoId, IsNumber, ValidateNested } from 'class-validator';
 import {
   CreateRequest,
   FindByIdRequest,
@@ -19,16 +19,17 @@ export class FindByIdDTO implements FindByIdRequest {
   id: string;
 }
 
-export class UpdateProjectPriceDTO implements UpdateRequest {
-  @IsMongoId()
-  id: string;
-  data: _ProjectPriceDTOObject;
-}
-
 class _ProjectPriceDTOObject implements UpdateTaskPriceObject {
   @IsMongoId()
   taskId?: string;
 
   @IsNumber()
   price?: number;
+}
+export class UpdateProjectPriceDTO implements UpdateRequest {
+  @IsMongoId()
+  id: string;
+
+  @ValidateNested()
+  data: _ProjectPriceDTOObject;
 }
