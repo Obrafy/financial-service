@@ -3,12 +3,12 @@ import {
   CreateRequest,
   FindByIdRequest,
   UpdateRequest,
-  UpdateTaskPriceObject,
+  UpdateProjectPriceObject,
 } from '../../common/proto-dto/financial-service/financial-service.pb';
 
 export class CreateProjectPriceDTO implements CreateRequest {
   @IsMongoId()
-  taskId: string;
+  projectId: string;
 
   @IsNumber()
   price: number;
@@ -19,9 +19,9 @@ export class FindByIdDTO implements FindByIdRequest {
   id: string;
 }
 
-class _ProjectPriceDTOObject implements UpdateTaskPriceObject {
+class _ProjectPriceDTOObject implements UpdateProjectPriceObject {
   @IsMongoId()
-  taskId?: string;
+  projectId?: string;
 
   @IsNumber()
   price?: number;

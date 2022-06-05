@@ -1,31 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model, Query } from 'mongoose';
-import { TaskPriceService } from './task-price.service';
-import { TaskPrice, TaskPriceDocument } from './entities/task-price.entity';
+import { ProjectPriceService } from './project-price.service';
+import { ProjectPrice, ProjectPriceDocument } from './entities/project-price.entity';
 import { createMock } from '@golevelup/ts-jest';
 import { getModelToken } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
-import { makeResponseTaskPrice } from '../common/utils';
+import { makeResponseProjectPrice } from '../common/utils';
 
-export const mockTaskPrice = (taskId = randomUUID(), price = 3500): Partial<TaskPrice> => ({
-  taskId: taskId,
+export const mockProjectPrice = (projectId = randomUUID(), price = 3500): Partial<ProjectPrice> => ({
+  projectId: projectId,
   price: price,
   createdAt: new Date(),
 });
 
-describe('TaskPriceService', () => {
-  let mockedTaskPriceService: TaskPriceService;
-  let mockedTaskPriceModel: Model<TaskPriceDocument>;
+describe('ProjectPriceService', () => {
+  let mockedProjectPriceService: ProjectPriceService;
+  let mockedProjectPriceModel: Model<ProjectPriceDocument>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        TaskPriceService,
+        ProjectPriceService,
         {
-          provide: getModelToken(TaskPrice.name),
+          provide: getModelToken(ProjectPrice.name),
           useValue: {
-            new: jest.fn().mockResolvedValue(mockTaskPrice()),
-            constructor: jest.fn().mockResolvedValue(mockTaskPrice()),
+            new: jest.fn().mockResolvedValue(mockProjectPrice()),
+            constructor: jest.fn().mockResolvedValue(mockProjectPrice()),
             find: jest.fn(),
             findOne: jest.fn(),
             findOneAndUpdate: jest.fn(),
@@ -38,13 +38,13 @@ describe('TaskPriceService', () => {
       ],
     }).compile();
 
-    mockedTaskPriceService = module.get<TaskPriceService>(TaskPriceService);
-    mockedTaskPriceModel = module.get<Model<TaskPriceDocument>>(getModelToken(TaskPrice.name));
+    mockedProjectPriceService = module.get<ProjectPriceService>(ProjectPriceService);
+    mockedProjectPriceModel = module.get<Model<ProjectPriceDocument>>(getModelToken(ProjectPrice.name));
   });
 
   it('should be defined', () => {
-    expect(mockedTaskPriceService).toBeDefined();
-    expect(mockedTaskPriceModel).toBeDefined();
+    expect(mockedProjectPriceService).toBeDefined();
+    expect(mockedProjectPriceModel).toBeDefined();
   });
 
   afterEach(() => {
@@ -52,56 +52,56 @@ describe('TaskPriceService', () => {
   });
 
   describe('create', () => {
-    it('should create a TaskPrice', async () => {
+    it('should create a ProjectPrice', async () => {
       // const expectedOutput = {
-      //   taskId: 'Test',
+      //   projectId: 'Test',
       //   price: 3500,
       // };
       // const createdDate = new Date();
-      // const spyCreateModel = jest.spyOn(mockedTaskPriceModel, 'create').mockImplementationOnce(() => {
+      // const spyCreateModel = jest.spyOn(mockedProjectPriceModel, 'create').mockImplementationOnce(() => {
       //   return Promise.resolve({ ...expectedOutput, createdAt: createdDate });
       // });
-      // const output = await mockedTaskPriceService.create(expectedOutput);
+      // const output = await mockedProjectPriceService.create(expectedOutput);
       // expect(spyCreateModel).toBeCalled();
       // expect(spyCreateModel).toBeCalledWith(expectedOutput);
-      // expect(output).toEqual(makeResponseTaskPrice({ ...expectedOutput, createdAt: createdDate }));
+      // expect(output).toEqual(makeResponseProjectPrice({ ...expectedOutput, createdAt: createdDate }));
     });
 
     it.todo('test bad payload');
     it.todo('test returning duplicate values error');
-    it.todo('test returning error when dont find taskId');
+    it.todo('test returning error when dont find projectId');
   });
 
   describe('findAll', () => {
-    it('should get all tasks', async () => {
-      // const expectedOutput = [mockTaskPrice(), mockTaskPrice()];
-      // const spyFindModel = jest.spyOn(mockedTaskPriceModel, 'find').mockResolvedValueOnce(expectedOutput);
-      // const output = await mockedTaskPriceService.findAll();
+    it('should get all projects', async () => {
+      // const expectedOutput = [mockProjectPrice(), mockProjectPrice()];
+      // const spyFindModel = jest.spyOn(mockedProjectPriceModel, 'find').mockResolvedValueOnce(expectedOutput);
+      // const output = await mockedProjectPriceService.findAll();
       // expect(spyFindModel).toBeCalled();
-      // expect(output).toEqual(makeResponseTaskPrice(expectedOutput));
+      // expect(output).toEqual(makeResponseProjectPrice(expectedOutput));
     });
 
     it.todo('should return an empty array when dont have data');
   });
 
   describe('findOne', () => {
-    // it('should find one task in DB', async () => {
-    //   const createdTask = mockTaskPrice();
+    // it('should find one project in DB', async () => {
+    //   const createdProject = mockProjectPrice();
     //   const usedToFindID = String(Math.random());
     //   const expectedOutput = {
     //     id: randomUUID(),
-    //     ...createdTask,
+    //     ...createdProject,
     //   };
 
-    //   const spyFindOneModel = jest.spyOn(mockedTaskPriceModel, 'findOne').mockResolvedValueOnce(jest.fn());
-    //   mockedTaskPriceModel.findOne = jest
+    //   const spyFindOneModel = jest.spyOn(mockedProjectPriceModel, 'findOne').mockResolvedValueOnce(jest.fn());
+    //   mockedProjectPriceModel.findOne = jest
     //     .fn()
     //     .mockImplementationOnce(() => ({ exec: jest.fn().mockResolvedValueOnce(expectedOutput) }));
 
-    //   const output = await mockedTaskPriceService.findOne(usedToFindID);
+    //   const output = await mockedProjectPriceService.findOne(usedToFindID);
 
     //   expect(spyFindOneModel).toBeCalledWith({ _id: usedToFindID });
-    //   expect(output).toEqual(makeResponseTaskPrice(expectedOutput));
+    //   expect(output).toEqual(makeResponseProjectPrice(expectedOutput));
     // });
 
     it.todo('should return an empty object when dont have this specific id');
@@ -110,18 +110,18 @@ describe('TaskPriceService', () => {
 
   describe('update', () => {
     // it('should update a model', async () => {
-    //   const expectedOutput = mockTaskPrice();
+    //   const expectedOutput = mockProjectPrice();
     //   const usedToFindID = String(Math.random());
 
-    //   jest.spyOn(mockedTaskPriceModel, 'findOneAndUpdate').mockReturnValueOnce(
-    //     createMock<Query<TaskPriceDocument, TaskPriceDocument>>({
+    //   jest.spyOn(mockedProjectPriceModel, 'findOneAndUpdate').mockReturnValueOnce(
+    //     createMock<Query<ProjectPriceDocument, ProjectPriceDocument>>({
     //       exec: jest.fn().mockResolvedValueOnce({
     //         ...expectedOutput,
     //       }),
     //     }),
     //   );
 
-    //   const output = await mockedTaskPriceService.update({ id: usedToFindID, ...expectedOutput });
+    //   const output = await mockedProjectPriceService.update({ id: usedToFindID, ...expectedOutput });
 
     //   expect(output).toEqual(expectedOutput);
     // });
@@ -135,10 +135,10 @@ describe('TaskPriceService', () => {
       const usedToFindID = String(Math.random());
 
       const spyRemoveModel = jest
-        .spyOn(mockedTaskPriceModel, 'deleteOne')
+        .spyOn(mockedProjectPriceModel, 'deleteOne')
         .mockResolvedValueOnce({ acknowledged: true, deletedCount: 2 });
 
-      await mockedTaskPriceService.remove(usedToFindID);
+      await mockedProjectPriceService.remove(usedToFindID);
 
       expect(spyRemoveModel).toBeCalledWith({ _id: usedToFindID });
     });

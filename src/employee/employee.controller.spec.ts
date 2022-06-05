@@ -40,7 +40,7 @@ describe('EmployeeController', () => {
   describe('create', () => {
     it.todo('should return a created model');
     it.todo('should return an error if receive a bad payload');
-    it.todo('should return a 404 if taskId is not found');
+    it.todo('should return a 404 if projectId is not found');
   });
 
   describe('findAll', () => {
