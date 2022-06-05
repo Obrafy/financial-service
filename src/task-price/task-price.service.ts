@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { TaskPrice, TaskPriceDocument } from './entities/task-price.entity';
 import {
@@ -35,11 +35,7 @@ export class TaskPriceService {
     );
 
     if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
-      return {
-        status: HttpStatus.BAD_REQUEST,
-        error: ['Project not Valid.'],
-        data: null,
-      };
+      throw new BadRequestException('This projectId does not exists.');
     }
 
     const createdTaskModel = await this.taskPriceModel.create(createTaskBody);
@@ -74,11 +70,9 @@ export class TaskPriceService {
       );
 
       if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
-        return {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Project not Valid.',
-          data: null,
-        };
+        if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
+          throw new BadRequestException('This projectId does not exists.');
+        }
       }
     }
 
@@ -92,11 +86,7 @@ export class TaskPriceService {
     const { deletedCount } = await this.taskPriceModel.deleteOne({ _id: id });
 
     if (deletedCount === 0) {
-      return {
-        status: HttpStatus.BAD_REQUEST,
-        error: ["Can't find a record"],
-        data: null,
-      };
+      throw new NotFoundException('It is not a valid record ID.');
     }
 
     return {

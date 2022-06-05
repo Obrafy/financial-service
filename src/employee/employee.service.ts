@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Employee, EmployeeDocument } from './entities/employee.entity';
 import {
@@ -41,11 +41,7 @@ export class EmployeeService {
     );
 
     if (statusOfUserInUserService.status !== HttpStatus.OK) {
-      return {
-        status: HttpStatus.BAD_REQUEST,
-        error: ['User not Valid.'],
-        data: null,
-      };
+      throw new BadRequestException('This employeeId does not exists.');
     }
 
     //Search for a valid project-price:
@@ -62,11 +58,7 @@ export class EmployeeService {
     const isValidProjectResolved = await Promise.all(isValidProjectPricePromise);
 
     if (isValidProjectResolved.includes(false)) {
-      return {
-        status: HttpStatus.BAD_REQUEST,
-        error: ['Project not Valid.'],
-        data: null,
-      };
+      throw new BadRequestException('Any projectId does not exists.');
     }
 
     const createdEmployee = await this.employeeModel.create(employeeToCreate);
@@ -100,11 +92,7 @@ export class EmployeeService {
     );
 
     if (statusOfUserInUserService.status !== HttpStatus.OK) {
-      return {
-        status: HttpStatus.BAD_REQUEST,
-        error: ['User not Valid.'],
-        data: null,
-      };
+      throw new BadRequestException('This employeeId does not exists.');
     }
 
     //Search for a valid project-price:
@@ -121,11 +109,7 @@ export class EmployeeService {
     const isValidProjectResolved = await Promise.all(isValidProjectPricePromise);
 
     if (isValidProjectResolved.includes(false)) {
-      return {
-        status: HttpStatus.BAD_REQUEST,
-        error: ['Project not Valid.'],
-        data: null,
-      };
+      throw new BadRequestException('Any projectId does not exists.');
     }
 
     await this.employeeModel.findOneAndUpdate({ _id: id }, employeeToUpdate);
@@ -138,11 +122,7 @@ export class EmployeeService {
     const { deletedCount } = await this.employeeModel.deleteOne({ _id: id });
 
     if (deletedCount === 0) {
-      return {
-        status: HttpStatus.BAD_REQUEST,
-        error: ["Can't find a record"],
-        data: null,
-      };
+      throw new NotFoundException('It is not a valid record ID.');
     }
 
     return {
