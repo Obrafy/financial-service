@@ -56,7 +56,7 @@ export class EmployeeService {
     const isValidProjectPricePromise = employeeToCreate.projectHistory.map(async (project) => {
       const result = await this.projectPriceService.findOne(project);
 
-      if (result.error !== null) {
+      if (result.errors !== null) {
         return false;
       }
 
@@ -121,7 +121,7 @@ export class EmployeeService {
     const isValidProjectPricePromise = projectHistory.map(async (project) => {
       const result = await this.projectPriceService.findOne(project);
 
-      if (result.error !== null) {
+      if (result.errors !== null) {
         return false;
       }
 

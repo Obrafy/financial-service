@@ -2,16 +2,10 @@ import { Model } from 'mongoose';
 import { BadRequestException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { TaskPrice, TaskPriceDocument } from './entities/task-price.entity';
-import {
-  CreateRequest,
-  FindResponse,
-  UpdateRequest,
-  WithObjectResponse,
-} from '../common/proto-dto/financial-service/financial-service.pb';
-import { makeResponseTaskPrice } from '../common/utils';
 import { ProjectServiceClient, PROJECT_SERVICE_NAME } from '../common/proto-dto/project-service/project.pb';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { CreateProjectPriceDTO, UpdateProjectPriceDTO } from './dtos/project-price.dto';
 
 @Injectable()
 export class TaskPriceService {
@@ -35,7 +29,7 @@ export class TaskPriceService {
    * @param param0 Expects an object with projecId from a valid project and its price
    * @returns The ProjectPrice object
    */
-  async create({ taskId, price }: CreateRequest): Promise<WithObjectResponse> {
+  async create({ taskId, price }: CreateProjectPriceDTO): Promise<TaskPriceDocument> {
     const statusOfProjectInProjecService = await firstValueFrom(
       this.projectProjectServiceClient.findOne({
         projectId: taskId,
@@ -48,17 +42,17 @@ export class TaskPriceService {
 
     const createdTaskModel = await this.taskPriceModel.create({ taskId, price });
 
-    return makeResponseTaskPrice(createdTaskModel);
+    return createdTaskModel;
   }
 
   /**
    * Return all records created from a valid ProjectId with their prices
    * @returns Array of ProjectPrice
    */
-  async findAll(): Promise<FindResponse> {
+  async findAll(): Promise<TaskPriceDocument[]> {
     const allTaskPrices = await this.taskPriceModel.find();
 
-    return makeResponseTaskPrice(allTaskPrices);
+    return allTaskPrices;
   }
 
   /**
@@ -66,10 +60,10 @@ export class TaskPriceService {
    * @param id a valid ProjectPrice
    * @returns Specific ProjectPrice model
    */
-  async findOne(id: string): Promise<WithObjectResponse> {
+  async findOne(id: string): Promise<TaskPriceDocument> {
     const requestedModel = await this.taskPriceModel.findOne({ _id: id });
 
-    return makeResponseTaskPrice(requestedModel);
+    return requestedModel;
   }
 
   /**
@@ -77,7 +71,7 @@ export class TaskPriceService {
    * @param param0 expects an valid ID for a ProjectPrice, and its data to be updated
    * @returns The new Updated Model
    */
-  async update({ id, data }: UpdateRequest) {
+  async update({ id, data }: UpdateProjectPriceDTO): Promise<TaskPriceDocument> {
     const taskPriceWithUpdateTime = {
       price: data.price,
       taskId: data.taskId,
@@ -92,9 +86,7 @@ export class TaskPriceService {
       );
 
       if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
-        if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
-          throw new BadRequestException('This projectId does not exists.');
-        }
+        throw new BadRequestException('This projectId does not exists.');
       }
     }
 
@@ -105,7 +97,7 @@ export class TaskPriceService {
 
     const updated = await this.taskPriceModel.findOne({ _id: id });
 
-    return makeResponseTaskPrice(updated);
+    return updated;
   }
 
   /**
@@ -113,17 +105,11 @@ export class TaskPriceService {
    * @param id An valid ProjectPrice ID
    * @returns Nothing
    */
-  async remove(id: string): Promise<WithObjectResponse> {
+  async remove(id: string): Promise<void> {
     const { deletedCount } = await this.taskPriceModel.deleteOne({ _id: id });
 
     if (deletedCount === 0) {
       throw new NotFoundException('It is not a valid record ID.');
     }
-
-    return {
-      status: HttpStatus.NO_CONTENT,
-      error: null,
-      data: null,
-    };
   }
 }
