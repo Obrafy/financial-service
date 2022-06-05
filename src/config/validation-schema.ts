@@ -16,4 +16,7 @@ export default Joi.object<ConfigInterface>({
 
   PROJECT_SERVICE_HOST: Joi.string(),
   PROJECT_SERVICE_PORT: Joi.number(),
+
+  AUTH_SERVICE_HOST: Joi.string(),
+  AUTH_SERVICE_PORT: Joi.number(),
 });

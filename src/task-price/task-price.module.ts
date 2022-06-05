@@ -34,5 +34,6 @@ import { join } from 'path';
   ],
   controllers: [TaskPriceController],
   providers: [TaskPriceService],
+  exports: [TaskPriceService],
 })
 export class TaskPriceModule {}

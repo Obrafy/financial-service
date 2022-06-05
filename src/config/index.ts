@@ -17,4 +17,7 @@ export interface ConfigInterface {
 
   PROJECT_SERVICE_HOST: string;
   PROJECT_SERVICE_PORT: number;
+
+  AUTH_SERVICE_HOST: string;
+  AUTH_SERVICE_PORT: number;
 }
