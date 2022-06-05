@@ -43,7 +43,7 @@ export class EmployeeService {
     if (statusOfUserInUserService.status !== HttpStatus.OK) {
       return {
         status: HttpStatus.BAD_REQUEST,
-        error: 'User not Valid.',
+        error: ['User not Valid.'],
         data: null,
       };
     }
@@ -64,7 +64,7 @@ export class EmployeeService {
     if (isValidProjectResolved.includes(false)) {
       return {
         status: HttpStatus.BAD_REQUEST,
-        error: 'Project not Valid.',
+        error: ['Project not Valid.'],
         data: null,
       };
     }
@@ -86,7 +86,7 @@ export class EmployeeService {
     return makeResponseEmployee(searchedEmployee);
   }
 
-  async update({ id, employeeId, projectHistory }: pUpdateRequest): Promise<pResponseWithObject> {
+  async update({ id, data: { projectHistory, employeeId } }: pUpdateRequest): Promise<pResponseWithObject> {
     const employeeToUpdate = {
       employeeId,
       projectHistory,
@@ -102,31 +102,31 @@ export class EmployeeService {
     if (statusOfUserInUserService.status !== HttpStatus.OK) {
       return {
         status: HttpStatus.BAD_REQUEST,
-        error: 'User not Valid.',
+        error: ['User not Valid.'],
         data: null,
       };
     }
 
-    // //Search for a valid project-price:
-    // const isValidProjectPricePromise = projectHistory.map(async (project) => {
-    //   const result = await this.projectPriceService.findOne(project);
+    //Search for a valid project-price:
+    const isValidProjectPricePromise = projectHistory.map(async (project) => {
+      const result = await this.projectPriceService.findOne(project);
 
-    //   if (result.error !== null) {
-    //     return false;
-    //   }
+      if (result.error !== null) {
+        return false;
+      }
 
-    //   return true;
-    // });
+      return true;
+    });
 
-    // const isValidProjectResolved = await Promise.all(isValidProjectPricePromise);
+    const isValidProjectResolved = await Promise.all(isValidProjectPricePromise);
 
-    // if (isValidProjectResolved.includes(false)) {
-    //   return {
-    //     status: HttpStatus.BAD_REQUEST,
-    //     error: 'Project not Valid.',
-    //     data: null,
-    //   };
-    // }
+    if (isValidProjectResolved.includes(false)) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        error: ['Project not Valid.'],
+        data: null,
+      };
+    }
 
     await this.employeeModel.findOneAndUpdate({ _id: id }, employeeToUpdate);
     const updatedModel = await this.employeeModel.findOne({ _id: id });
@@ -140,7 +140,7 @@ export class EmployeeService {
     if (deletedCount === 0) {
       return {
         status: HttpStatus.BAD_REQUEST,
-        error: "Can't find a record",
+        error: ["Can't find a record"],
         data: null,
       };
     }

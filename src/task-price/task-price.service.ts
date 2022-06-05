@@ -37,7 +37,7 @@ export class TaskPriceService {
     if (statusOfProjectInProjecService.status !== HttpStatus.OK) {
       return {
         status: HttpStatus.BAD_REQUEST,
-        error: 'Project not Valid.',
+        error: ['Project not Valid.'],
         data: null,
       };
     }
@@ -59,17 +59,17 @@ export class TaskPriceService {
     return makeResponseTaskPrice(requestedModel);
   }
 
-  async update({ id, price, taskId }: UpdateRequest) {
+  async update({ id, data }: UpdateRequest) {
     const taskPriceWithUpdateTime = {
-      price,
-      taskId,
+      price: data.price,
+      taskId: data.taskId,
       updatedAt: Date.now(),
     };
 
-    if (taskId) {
+    if (data.taskId) {
       const statusOfProjectInProjecService = await firstValueFrom(
         this.projectProjectServiceClient.findOne({
-          projectId: taskId,
+          projectId: data.taskId,
         }),
       );
 
@@ -94,7 +94,7 @@ export class TaskPriceService {
     if (deletedCount === 0) {
       return {
         status: HttpStatus.BAD_REQUEST,
-        error: "Can't find a record",
+        error: ["Can't find a record"],
         data: null,
       };
     }

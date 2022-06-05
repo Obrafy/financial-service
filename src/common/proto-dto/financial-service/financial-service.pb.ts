@@ -14,12 +14,12 @@ export interface TaskPriceObject {
   taskId: string;
   price: number;
   createdAt: number;
-  updatedAt?: number | undefined;
+  updatedAt: number;
 }
 
 export interface WithObjectResponse {
   status: number;
-  error: string;
+  error: string[];
   data: TaskPriceObject | undefined;
 }
 
@@ -34,14 +34,18 @@ export interface CreateRequest {
 
 export interface FindResponse {
   status: number;
-  error: string;
+  error: string[];
   data: TaskPriceObject[];
+}
+
+export interface UpdateTaskPriceObject {
+  taskId?: string | undefined;
+  price?: number | undefined;
 }
 
 export interface UpdateRequest {
   id: string;
-  taskId?: string | undefined;
-  price?: number | undefined;
+  data: UpdateTaskPriceObject | undefined;
 }
 
 /** <-------------- Employee ---------------> */
@@ -50,12 +54,12 @@ export interface EmployeeObject {
   employeeId: string;
   projectHistory: string[];
   createdAt: number;
-  updatedAt?: number | undefined;
+  updatedAt: number;
 }
 
 export interface pResponseWithObject {
   status: number;
-  error: string;
+  error: string[];
   data: EmployeeObject | undefined;
 }
 
@@ -68,15 +72,19 @@ export interface pFindByIdRequest {
   id: string;
 }
 
+export interface UpdateEmployeeData {
+  employeeId?: string | undefined;
+  projectHistory: string[];
+}
+
 export interface pUpdateRequest {
   id: string;
-  employeeId?: string | undefined;
-  projectHistory?: string | undefined;
+  data: UpdateEmployeeData | undefined;
 }
 
 export interface pResponseArrayObject {
   status: number;
-  error: string;
+  error: string[];
   data: EmployeeObject[];
 }
 
