@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AppModule } from './app.module';
+import { GeneralExceptionFilter } from './common/filter/general-exception.filter';
 import { FINANCIAL_PROJECT_PACKAGE_NAME } from './common/proto-dto/financial-service/financial-service.pb';
 
 async function bootstrap() {
@@ -14,6 +15,8 @@ async function bootstrap() {
       protoPath: [join(`${process.env.ENV}`, 'proto', 'proto-files', 'financial-service', 'financial-service.proto')],
     },
   });
+
+  app.useGlobalFilters(new GeneralExceptionFilter());
 
   // Validate and Transform Global Pipes
   app.useGlobalPipes(
