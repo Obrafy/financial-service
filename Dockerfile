@@ -2,7 +2,7 @@ FROM node:current-bullseye
 
 WORKDIR /app/
 
-RUN npm install -g @nestjs/cli@8.2.5
+RUN npm install -g @nestjs/cli@8.12.1
 
 COPY .docker/ .docker/
 
