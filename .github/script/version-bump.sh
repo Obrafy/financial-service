@@ -24,7 +24,7 @@ if [[ ! "$(git tag -l)" =~ .*"$current_version".* ]]; then
   new_version=$current_version
 else
   echo "Bumping version in package.json"
-  npm version patch
+  npm version patch -m "bump version to %s [skip ci]"
   new_version=$(node -p "require('./package.json').version")
   git push origin --force
 fi
