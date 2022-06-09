@@ -30,3 +30,5 @@ else
 fi
 git tag "v$new_version"
 git push origin --force --tags
+
+echo '::set-output name=TAG::${new_version}'
