@@ -34,7 +34,7 @@ jobs:
       - name: Bump version and push tag
         id: tag_version
         run: bash |
-          ./.github/script/version.sh
+          ./.github/script/version-bump.sh
 
   build-and-push-image:
     runs-on: ubuntu-latest

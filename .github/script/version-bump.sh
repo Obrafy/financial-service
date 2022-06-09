@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
+git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+
 current_version=$(node -p "require('./package.json').version")
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 
