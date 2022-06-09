@@ -28,5 +28,5 @@ else
   new_version=$(node -p "require('./package.json').version")
   git push origin --force
 fi
-git tag "$new_version"
+git tag "v$new_version"
 git push origin --force --tags
