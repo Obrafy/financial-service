@@ -28,6 +28,8 @@ jobs:
 
   version-bump:
     runs-on: ubuntu-latest
+    outputs:
+      tag_output: ${{ steps.tag_version.outputs.TAG }}
     steps:
       - uses: actions/checkout@v3
 
@@ -41,6 +43,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    needs: version-bump
 
     steps:
       - name: Checkout repository
@@ -56,4 +59,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ jobs.version-bump.tag_version.output.TAG }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ needs.version-bump.outputs.tag_output }}
