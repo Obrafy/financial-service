@@ -2,15 +2,23 @@ version: '3.8'
 
 services:
   app:
-    build: .
-    entrypoint: .docker/entrypoint.sh
     container_name: financial-service
-    ports:
-      - 3000:3000
+    build:
+      dockerfile: Dockerfile
+      context: .
+      # Only will build development stage from our dockerfile
+      target: development
     volumes:
       - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    # Run a command against the development stage of the image
+    command: npm run start:dev
+    ports:
+      - 3030:3000
     networks:
-      - financial-service-net
+      - 'financial-service-net'
 
 networks:
   financial-service-net:

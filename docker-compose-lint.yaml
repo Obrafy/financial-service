@@ -2,10 +2,16 @@ version: '3.8'
 
 services:
   app:
-    build: .
-    entrypoint: "npm run lint"
     container_name: financial-service
-    ports:
-      - 3000:3000
+    build:
+      dockerfile: Dockerfile
+      context: .
+      # Only will build development stage from our dockerfile
+      target: development
     volumes:
       - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    # Run a command against the development stage of the image
+    entrypoint: 'npm run lint'
