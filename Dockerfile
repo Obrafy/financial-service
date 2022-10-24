@@ -1,4 +1,4 @@
-FROM node:18-alpine As development
+FROM node:19-alpine As development
 
 # Create app directory
 WORKDIR /app
@@ -19,7 +19,7 @@ COPY --chown=node:node . .
 # Use the node user from the image (instead of the root user)
 USER node
 
-FROM node:18-alpine As build
+FROM node:19-alpine As build
 
 WORKDIR /app
 
@@ -45,7 +45,7 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:18-alpine As production
+FROM node:19-alpine As production
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /app/node_modules ./node_modules
